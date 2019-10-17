@@ -24,7 +24,7 @@ class User extends Model {
     return this;
   }
 
-  checkPassord(password) {
+  checkPassword(password) {
     return bcypt.compare(password, this.password_hash);
   }
 }

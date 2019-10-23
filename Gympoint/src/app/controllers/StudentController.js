@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 
-import Student from '../models/student';
+import Student from '../models/Student';
 
 class StudentController {
   async store(req, res) {
@@ -21,7 +21,7 @@ class StudentController {
     const studentExists = await Student.findOne({
       where: { email: req.body.email },
     });
-
+    // check if student already exists
     if (studentExists) {
       return res.status(400).json({ error: 'Student already exists.' });
     }
@@ -56,7 +56,12 @@ class StudentController {
       return res.status(400).json({ error: 'Validation fails' });
     }
     const { email } = req.body;
-    const student = await Student.findOne(req.params);
+    const student = await Student.findByPk(req.params.id);
+    // check this student there is
+    if (!student) {
+      return res.status(400).json({ error: 'Student does not exists' });
+    }
+    // check unique email in an existing student
     if (email !== student.email) {
       const studentExists = await Student.findOne({ where: { email } });
       if (studentExists) {

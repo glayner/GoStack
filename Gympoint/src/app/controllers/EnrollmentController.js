@@ -4,6 +4,9 @@ import Enrollment from '../models/Enrollment';
 import Plan from '../models/Plan';
 import Student from '../models/Student';
 
+import Queue from '../../lib/Queue';
+import CreationMail from '../jobs/CreationMail';
+
 class EnrollmentController {
   async store(req, res) {
     const schema = Yup.object().shape({
@@ -18,6 +21,7 @@ class EnrollmentController {
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'Validation fails' });
     }
+
     const { student_id, plan_id, start_date } = req.body;
     const date = parseISO(start_date);
     const plan = await Plan.findByPk(plan_id);
@@ -26,15 +30,18 @@ class EnrollmentController {
       return res.status(400).json({ error: 'Plan does not exists' });
     }
     // check this student exists
-    if (!(await Student.findByPk(student_id))) {
+    const student = await Student.findByPk(student_id);
+    if (!student) {
       return res.status(400).json({ error: 'Student does not exists' });
     }
     // check past dates
     if (isBefore(date, new Date())) {
       return res.status(400).json({ error: 'Past dates are not permitted' });
     }
+
     const price = plan.price * plan.duration;
     const end_date = addMonths(date, plan.duration);
+
     const enrollment = await Enrollment.create({
       start_date: date,
       end_date,
@@ -42,6 +49,8 @@ class EnrollmentController {
       student_id,
       plan_id,
     });
+    await Queue.add(CreationMail.Key, { enrollment, student, plan });
+
     return res.json(enrollment);
   }
 
@@ -51,10 +60,12 @@ class EnrollmentController {
       include: [
         {
           model: Student,
+          as: 'student',
           attributes: ['name', 'email'],
         },
         {
           model: Plan,
+          as: 'plan',
           attributes: ['title', 'duration'],
         },
       ],
@@ -93,14 +104,14 @@ class EnrollmentController {
     }
     const price = plan.price * plan.duration;
     const end_date = addMonths(date, plan.duration);
-    const enrollmentUp = await enrollment.update({
+    const enrollmentUpdated = await enrollment.update({
       start_date: date,
       end_date,
       price,
       student_id,
       plan_id,
     });
-    return res.json(enrollmentUp);
+    return res.json(enrollmentUpdated);
   }
 
   async delete(req, res) {
@@ -108,10 +119,12 @@ class EnrollmentController {
       include: [
         {
           model: Student,
+          as: 'student',
           attributes: ['name', 'email'],
         },
         {
           model: Plan,
+          as: 'plan',
           attributes: ['title', 'duration'],
         },
       ],

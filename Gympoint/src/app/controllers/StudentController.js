@@ -84,6 +84,11 @@ class StudentController {
       student_height,
     });
   }
+
+  async index(req, res) {
+    const student = await Student.findAll();
+    return res.json(student);
+  }
 }
 
 export default new StudentController();

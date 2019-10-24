@@ -133,9 +133,9 @@ class EnrollmentController {
     if (!enrollment) {
       return res.status(400).json({ error: 'Invalid Enrollment' });
     }
-    const e = enrollment;
+    const enrollmentDeleted = enrollment;
     await enrollment.destroy();
-    return res.json(e);
+    return res.json(enrollmentDeleted);
   }
 }
 

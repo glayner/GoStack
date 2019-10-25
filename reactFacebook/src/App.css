@@ -1,0 +1,9 @@
+body, html, #app {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+#app{
+  background: #F2F2F2;
+}

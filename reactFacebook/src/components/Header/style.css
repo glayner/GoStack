@@ -1,0 +1,25 @@
+.containerHeader{
+    background: #4A90E2;
+    padding: 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    max-height: 64px;
+}
+.logoUserHeader{
+    width: 30px;
+    height: 30px;
+    right: 42px;
+    top: 20px;
+    background: #f2f2f2;
+    border-radius: 15px;
+}
+.profileContainerHeader {
+    padding: 5px;    
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 121px;
+    color: #FFF;
+}

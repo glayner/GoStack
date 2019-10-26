@@ -1,0 +1,18 @@
+.containerComment{
+  display: flex;
+  align-items: flex-start;
+}
+
+.avatarComment img {
+  height: 45px;
+  width: 45px;
+  border-radius: 100px;
+  margin-left: 20px;
+}
+
+.contentComment{
+  background: #F2F2F2;
+  padding: 20px;
+  margin: 0 20px 15px 10px;
+  border-radius: 20px;
+}

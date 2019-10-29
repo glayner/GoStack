@@ -33,6 +33,7 @@ module.exports = {
       { extensions: ['.jsx', '.js'] }
     ],
     // destiva a regra que quando tem apenas 1 exoport dentro do arquivo ser um export default
-    'import/prefer-default-export': 'off'
+    'import/prefer-default-export': 'off',
+    'react/state-in-constructor': 'off'
   },
 };

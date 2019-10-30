@@ -34,6 +34,7 @@ module.exports = {
     ],
     // destiva a regra que quando tem apenas 1 exoport dentro do arquivo ser um export default
     'import/prefer-default-export': 'off',
+    // desativa a obrigatoriedade do state ficar no constructor
     'react/state-in-constructor': 'off'
   },
 };

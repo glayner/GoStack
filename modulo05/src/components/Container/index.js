@@ -4,7 +4,7 @@ const Container = styled.div`
   max-width: 700px;
   background: #fff;
   border-radius: 4px;
-  box-shadow: 0 0 20ox rgba(0, 0, 0, 0.1);
+  box-shadow: 20px 20px 20px 10px rgba(0, 0, 0, 0.2);
   padding: 30px;
   margin: 80px auto;
 

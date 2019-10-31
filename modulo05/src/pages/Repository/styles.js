@@ -115,3 +115,59 @@ export const IssueList = styled.ul`
     }
   }
 `;
+export const IssuesFilter = styled.form`
+  padding-top: 30px;
+  margin-top: 30px;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: space-around;
+  button {
+    width: 100px;
+    height: 30px;
+    border: 2px solid #999;
+    background: #7159c1;
+    color: #fff;
+    border-radius: 4px;
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+  }
+`;
+
+export const IssuePagination = styled.form`
+  padding-top: 30px;
+  margin-top: 30px;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  button {
+    height: 40px;
+    width: 40px;
+    border: 2px solid #999;
+    background: #7159c1;
+    color: #fff;
+    border-radius: 50%;
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+    svg {
+      margin: 0;
+      margin-top: 2px;
+    }
+  }
+
+  span {
+    background: #7159c1;
+    padding: 10px 15px;
+    border-radius: 50%;
+    border: 2px solid #999;
+    color: #fff;
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+  }
+
+  .prev {
+    cursor: ${props => (props.prevDesabled ? 'not-allowed' : 'pointer')};
+    opacity: ${props => (props.prevDesabled ? '0.6' : '1')};
+  }
+  .next {
+    cursor: ${props => (props.nextDesabled ? 'not-allowed' : 'pointer')};
+    opacity: ${props => (props.nextDesabled ? '0.6' : '1')};
+  }
+`;

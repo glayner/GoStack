@@ -5,13 +5,14 @@ import { Link } from 'react-router-dom';
 import api from '../../services/api';
 import Container from '../../components/Container/index';
 
-import { Form, SubmitButton, List } from './styles';
+import { Form, SubmitButton, List, LabelError } from './styles';
 
 export default class Main extends Component {
   state = {
     newRepo: '',
     repositories: [],
     loading: false,
+    notFound: '',
   };
 
   // Carregar os dados no localStorage
@@ -34,41 +35,58 @@ export default class Main extends Component {
     }
   }
 
+  // atribui ao state newRepo o valor do input
   handleInputChange = e => {
     this.setState({
       newRepo: e.target.value,
     });
   };
 
+  // carrega ao dar submit dentro do formulario que tem essa função em onSubmit
   handleSubmit = async e => {
     e.preventDefault();
-    this.setState({ loading: true });
-
+    this.setState({ loading: true, notFound: '' });
     const { newRepo, repositories } = this.state;
 
-    const response = await api.get(`/repos/${newRepo}`);
+    try {
+      // verificando duplicidade de repositório
+      repositories.map(rep => {
+        if (rep.name === newRepo) {
+          // interrome e manda erro para o catch
+          throw new Error('Repositório duplicado');
+        }
+        return rep;
+      });
+      const response = await api.get(`/repos/${newRepo}`).catch(error => {
+        // mensagem de erro personalizada caso 404
+        if (error.response.status === 404)
+          throw Error('Repositório inexistente');
+      });
+      // pega nome completo: proprietario/repositorio
+      const data = {
+        name: response.data.full_name,
+      };
 
-    const data = {
-      name: response.data.full_name,
-    };
-
-    this.setState({
-      repositories: [...repositories, data],
-      newRepo: '',
-      loading: false,
-    });
+      this.setState({
+        repositories: [...repositories, data],
+        newRepo: '',
+      });
+    } catch (error) {
+      this.setState({ notFound: String(error) });
+    }
+    this.setState({ loading: false });
   };
 
   render() {
-    const { newRepo, loading, repositories } = this.state;
+    const { newRepo, loading, repositories, notFound } = this.state;
     return (
       <Container>
         <h1>
           <FaGithubAlt />
           Repositório
         </h1>
-
-        <Form onSubmit={this.handleSubmit}>
+        {/* caso não encontre repositorio input fica com borda vermelha */}
+        <Form onSubmit={this.handleSubmit} error={notFound ? 1 : 0}>
           <input
             type="text"
             placeholder="Adicionar repositório"
@@ -76,7 +94,7 @@ export default class Main extends Component {
             onChange={this.handleInputChange}
           />
 
-          <SubmitButton loading={loading}>
+          <SubmitButton loading={loading ? 1 : 0}>
             {loading ? (
               <FaSpinner color="#FFF" size={14} />
             ) : (
@@ -84,6 +102,11 @@ export default class Main extends Component {
             )}
           </SubmitButton>
         </Form>
+        {/* caso caia no catch a chamada api o erro surge aqui */}
+        <LabelError>
+          <p>{notFound}</p>
+        </LabelError>
+        {/* Listagem dos repositórios */}
         <List>
           {repositories.map(repository => (
             <li key={repository.name}>

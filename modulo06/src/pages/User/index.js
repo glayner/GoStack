@@ -34,29 +34,32 @@ export default class User extends Component {
     page: 1,
     perPage: 10,
     more: true,
+    refreshing: false,
   };
 
   async componentDidMount() {
-    this.setState({loading: true, more: true});
+    this.setState({loading: true, more: true, page: 1});
     this.loadStars();
   }
 
   loadStars = async () => {
     const {navigation} = this.props;
-    const {stars, page, perPage} = this.state;
+    const {stars, page, perPage, more} = this.state;
     const user = navigation.getParam('user');
+    if (more) {
+      const response = await api.get(
+        `/users/${user.login}/starred?per_page=${perPage}&page=${page}`
+      );
 
-    const response = await api.get(
-      `/users/${user.login}/starred?per_page=${perPage}&page=${page}`
-    );
-    if (response.data.length === 0) {
-      this.setState({more: false, loading: false});
-    } else {
-      this.setState({
-        stars: [...stars, ...response.data],
-        page: page + 1,
-        loading: false,
-      });
+      if (response.data.length === 0) {
+        this.setState({more: false, loading: false});
+      } else {
+        this.setState({
+          stars: [...stars, ...response.data],
+          page: page + 1,
+          loading: false,
+        });
+      }
     }
   };
 
@@ -67,9 +70,29 @@ export default class User extends Component {
     return null;
   };
 
+  refreshList = async () => {
+    this.setState({refreshing: true, more: true, page: 1, stars: []});
+
+    const {navigation} = this.props;
+    const {perPage} = this.state;
+    const user = navigation.getParam('user');
+    const response = await api.get(
+      `/users/${user.login}/starred?per_page=${perPage}&page=${1}`
+    );
+
+    this.setState({
+      stars: [...response.data],
+      refreshing: false,
+      page: 2,
+    });
+    if (response.data.length < perPage) {
+      this.setState({more: false});
+    }
+  };
+
   render() {
     const {navigation} = this.props;
-    const {stars, loading} = this.state;
+    const {stars, loading, refreshing} = this.state;
 
     const user = navigation.getParam('user');
 
@@ -101,8 +124,11 @@ export default class User extends Component {
             </Starred>
           )}
           onEndReached={this.loadStars}
-          onEndReacherdThreshold={0.1}
+          onEndReacherdThreshold={0.2}
           ListFooterComponent={this.renderFooter}
+          onRefresh={this.refreshList} // Função dispara quando o usuário arrasta a lista pra baixo
+          refreshing={refreshing} // Variável que armazena um estado true/false que representa se a lista está atualizando
+          // Restante das props
         />
       </Container>
     );

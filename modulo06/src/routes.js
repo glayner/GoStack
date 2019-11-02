@@ -3,12 +3,14 @@ import {createStackNavigator} from 'react-navigation-stack';
 
 import Main from './pages/Main';
 import User from './pages/User';
+import WebStarred from './pages/WebStarred';
 
 const Routes = createAppContainer(
   createStackNavigator(
     {
       Main,
       User,
+      WebStarred,
     },
     {
       headerLayoutPreset: 'center', // centralizar texto header

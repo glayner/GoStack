@@ -35,6 +35,10 @@ module.exports = {
      // destiva a regra que quando tem apenas 1 export dentro do arquivo ser um export default
      'import/prefer-default-export': 'off',
      // desativa a obrigatoriedade do state ficar no constructor
-     'react/state-in-constructor': 'off'
+     'react/state-in-constructor': 'off',
+     // permitir que use console.tron
+     'no-console': ["error", {allow: ["tron"]}],
+     // permitir que altere parametro recebido na função
+     'no-param-reassign': 'off'
   },
 };

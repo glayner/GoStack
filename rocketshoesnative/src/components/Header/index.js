@@ -11,7 +11,6 @@ import {
 } from './styles';
 
 function Header({navigation, cartSize}) {
-  console.tron.log(navigation);
   return (
     <Container>
       <LogoContainer onPress={() => navigation.navigate('Home')}>

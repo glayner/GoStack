@@ -19,6 +19,7 @@ export const Logo = styled.Image.attrs({
   source: logo,
   resizeMode: 'cover',
 })`
+  margin-left: 15px;
   width: 185px;
   height: 24px;
 `;

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
+import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import PropTypes from 'prop-types';
 import Numeral from 'numeral';
 import 'numeral/locales/pt-br';
 
@@ -20,6 +21,8 @@ import {
   ProductButton,
 } from './styles';
 
+import * as CartActions from '../../store/modules/cart/actions';
+
 class Home extends Component {
   state = {
     products: [],
@@ -38,23 +41,19 @@ class Home extends Component {
   }
 
   handleAddProduct = product => {
-    const {dispatch} = this.props;
+    const {addToCart} = this.props;
 
-    dispatch({
-      type: 'ADD_TO_CART',
-      product,
-    });
+    addToCart(product);
   };
 
   render() {
     const {products} = this.state;
-
-    console.tron.log(this.props);
+    const {amount} = this.props;
     return (
       <Container>
         <List
           data={products}
-          keyExtractor={p => String(p.id)} // função que vai pegar cada um dos usuarios temos que retornar qual é o item unico dentro desse usuario
+          keyExtractor={p => String(p.id)}
           renderItem={({item}) => (
             <Product>
               <ProductImage source={{uri: item.image}} />
@@ -63,7 +62,7 @@ class Home extends Component {
               <ProductButton onPress={() => this.handleAddProduct(item)}>
                 <ProductIconContainer>
                   <IconBasket />
-                  <ProducIconText>0</ProducIconText>
+                  <ProducIconText>{amount[item.id] || 0}</ProducIconText>
                 </ProductIconContainer>
                 <ProductButtonText>Adicionar</ProductButtonText>
               </ProductButton>
@@ -81,4 +80,17 @@ Home.propTypes = {
   }).isRequired,
 };
 
-export default connect()(Home);
+const mapStateToProps = state => ({
+  amount: state.cart.reduce((amount, product) => {
+    amount[product.id] = product.amount;
+
+    return amount;
+  }, {}),
+});
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(CartActions, dispatch);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Home);

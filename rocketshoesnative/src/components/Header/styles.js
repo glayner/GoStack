@@ -1,4 +1,5 @@
 import styled from 'styled-components/native';
+import {RectButton} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import logo from '../../assets/images/logo.png';
@@ -12,6 +13,8 @@ export const Container = styled.View`
   background: #141419;
 `;
 
+export const LogoContainer = styled(RectButton)``;
+
 export const Logo = styled.Image.attrs({
   source: logo,
   resizeMode: 'cover',
@@ -20,27 +23,25 @@ export const Logo = styled.Image.attrs({
   height: 24px;
 `;
 
-export const BasketContainer = styled.View`
+export const BasketContainer = styled(RectButton)`
   position: relative;
   width: 35px;
   height: 24px;
   margin-right: 30px;
 `;
-export const CardContainer = styled.View`
-  background: #7159c1;
-  align-items: center;
-  justify-content: center;
-  align-self: flex-end;
-  border-radius: 10px;
-  width: 20px;
-  height: 20px;
-  position: absolute;
-  z-index: 1;
-`;
-
 export const CartAmount = styled.Text`
-  font-size: 12px;
+  position: absolute;
+  min-width: 18px;
+  min-height: 18px;
+  background: #7159c1;
   color: #fff;
+  text-align: center;
+  border-radius: 9px;
+  right: -8px;
+  top: -8px;
+  font-size: 12px;
+  overflow: hidden;
+  padding: 2px;
 `;
 
 export const IconBasket = styled(Icon).attrs({

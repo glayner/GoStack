@@ -1,4 +1,9 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import Numeral from 'numeral';
+import 'numeral/locales/pt-br';
+
 import api from '../../services/api';
 
 import {
@@ -15,7 +20,7 @@ import {
   ProductButton,
 } from './styles';
 
-export default class Home extends Component {
+class Home extends Component {
   state = {
     products: [],
   };
@@ -23,15 +28,28 @@ export default class Home extends Component {
   async componentDidMount() {
     const response = await api.get('/products');
 
-    // const data = response.data.map(products => ({
-    //   ...products,
-    //   priceFormatted: products.price,
-    // }));
-    this.setState({products: response.data});
+    Numeral.locale('pt-br');
+
+    const data = response.data.map(products => ({
+      ...products,
+      priceFormatted: Numeral(products.price).format('$0,0.00'),
+    }));
+    this.setState({products: data});
   }
+
+  handleAddProduct = product => {
+    const {dispatch} = this.props;
+
+    dispatch({
+      type: 'ADD_TO_CART',
+      product,
+    });
+  };
 
   render() {
     const {products} = this.state;
+
+    console.tron.log(this.props);
     return (
       <Container>
         <List
@@ -41,14 +59,14 @@ export default class Home extends Component {
             <Product>
               <ProductImage source={{uri: item.image}} />
               <Title>{item.title}</Title>
-              <Price>{item.price}</Price>
-              <ProductButtonText>
+              <Price>{item.priceFormatted}</Price>
+              <ProductButton onPress={() => this.handleAddProduct(item)}>
                 <ProductIconContainer>
                   <IconBasket />
                   <ProducIconText>0</ProducIconText>
                 </ProductIconContainer>
-                <ProductButton>Adicionar</ProductButton>
-              </ProductButtonText>
+                <ProductButtonText>Adicionar</ProductButtonText>
+              </ProductButton>
             </Product>
           )}
         />
@@ -56,3 +74,11 @@ export default class Home extends Component {
     );
   }
 }
+Home.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+    dispatch: PropTypes.func,
+  }).isRequired,
+};
+
+export default connect()(Home);

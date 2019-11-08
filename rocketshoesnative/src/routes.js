@@ -14,14 +14,10 @@ const Routes = createAppContainer(
       Cart,
     },
     {
-      headerBackTitleVisible: false,
-      defaultNavigationOptions: {
-        headerStyle: {
-          backgroundColor: '#141419',
-        },
-        headerTintColor: '#FFF',
-        header: () => <Header />,
-      },
+      defaultNavigationOptions: navigation => ({
+        // eslint-disable-next-line react/jsx-props-no-spreading
+        header: <Header {...navigation} />,
+      }),
     }
   )
 );

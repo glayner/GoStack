@@ -40,7 +40,7 @@ export const Price = styled.Text`
   margin: 5px 0 20px;
 `;
 
-export const ProductButtonText = styled(RectButton)`
+export const ProductButton = styled(RectButton)`
   background: #7159c1;
   margin-top: auto;
   border-radius: 6px;
@@ -70,7 +70,7 @@ export const ProducIconText = styled.Text`
   color: #fff;
 `;
 
-export const ProductButton = styled.Text`
+export const ProductButtonText = styled.Text`
   flex: 1;
   color: #fff;
   text-align: center;

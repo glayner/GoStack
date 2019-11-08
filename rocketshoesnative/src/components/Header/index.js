@@ -27,8 +27,8 @@ function Header({navigation, cartSize}) {
 Header.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
-    cartSize: PropTypes.func,
   }).isRequired,
+  cartSize: PropTypes.number.isRequired,
 };
 
 export default connect(state => ({

@@ -35,15 +35,15 @@ import {
 
 import * as CartActions from '../../store/modules/cart/actions';
 
-function Cart({cart, cartSize, removeFromCart, updateAmount, total}) {
+function Cart({cart, cartSize, removeFromCart, updateAmountRequest, total}) {
   Numeral.locale('pt-br');
 
   function increment(product) {
-    updateAmount(product.id, product.amount + 1);
+    updateAmountRequest(product.id, product.amount + 1);
   }
 
   function decrement(product) {
-    updateAmount(product.id, product.amount - 1);
+    updateAmountRequest(product.id, product.amount - 1);
   }
 
   if (cartSize <= 0) {
@@ -103,10 +103,12 @@ function Cart({cart, cartSize, removeFromCart, updateAmount, total}) {
 Cart.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
-    dispatch: PropTypes.func,
-    cart: PropTypes.func,
-    cartSize: PropTypes.func,
   }).isRequired,
+  cart: PropTypes.func.isRequired,
+  cartSize: PropTypes.func.isRequired,
+  removeFromCart: PropTypes.func.isRequired,
+  updateAmountRequest: PropTypes.func.isRequired,
+  total: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({

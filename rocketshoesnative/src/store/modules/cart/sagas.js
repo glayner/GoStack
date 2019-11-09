@@ -4,7 +4,7 @@ import Numeral from 'numeral';
 import 'numeral/locales/pt-br';
 import api from '../../../services/api';
 
-import * as NavigationServices from '../../../services/NavigationService';
+import * as NavigationServices from '../../../services/navigation';
 
 import {addToCartSuccess, updateAmountSuccess} from './actions';
 

@@ -2,7 +2,8 @@ import {call, select, put, all, takeLatest} from 'redux-saga/effects';
 import {Alert} from 'react-native';
 import Numeral from 'numeral';
 import 'numeral/locales/pt-br';
-import api from '../../../services/api';
+// import api from '../../../services/api';
+import * as server from '../../../services/server';
 
 import * as NavigationServices from '../../../services/navigation';
 
@@ -14,9 +15,11 @@ function* addToCart({id}) {
     state.cart.find(p => p.id === id)
   );
 
-  const stock = yield call(api.get, `/stock/${id}`);
+  // const stock = yield call(api.get, `/stock/${id}`);
+  const stock = server.stock.find(s => s.id === id);
 
-  const stockAmount = stock.data.amount;
+  // const stockAmount = stock.data.amount;
+  const stockAmount = stock.amount;
   const currentAmount = productExists ? productExists.amount : 0;
 
   const amount = currentAmount + 1;
@@ -33,12 +36,15 @@ function* addToCart({id}) {
   if (productExists) {
     yield put(updateAmountSuccess(id, amount));
   } else {
-    const response = yield call(api.get, `/products/${id}`);
+    // const response = yield call(api.get, `/products/${id}`);
+    const response = server.products.find(p => p.id === id);
 
     const data = {
-      ...response.data,
+      // ...response.data,
+      ...response,
       amount: 1,
-      priceFormatted: Numeral(response.data.price).format('$0,0.00'),
+      // priceFormatted: Numeral(response.data.price).format('$0,0.00'),
+      priceFormatted: Numeral(response.price).format('$0,0.00'),
     };
 
     yield put(addToCartSuccess(data));
@@ -49,8 +55,10 @@ function* addToCart({id}) {
 function* updateAmount({id, amount}) {
   if (amount <= 0) return;
 
-  const stock = yield call(api.get, `/stock/${id}`);
-  const stockAmount = stock.data.amount;
+  // const stock = yield call(api.get, `/stock/${id}`);
+  const stock = server.stock.find(s => s.id === id);
+  // const stockAmount = stock.data.amount;
+  const stockAmount = stock.amount;
 
   if (amount > stockAmount) {
     Alert.alert(

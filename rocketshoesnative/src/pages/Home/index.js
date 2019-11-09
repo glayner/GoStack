@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 import Numeral from 'numeral';
 import 'numeral/locales/pt-br';
 
-import api from '../../services/api';
+// import api from '../../services/api';
+import * as server from '../../services/server';
 
 import {
   Container,
@@ -35,11 +36,13 @@ export default function Home() {
 
   useEffect(() => {
     async function loadProducts() {
-      const response = await api.get('/products');
+      // const response = await api.get('/products');
+      const response = server.products;
 
       Numeral.locale('pt-br');
 
-      const data = response.data.map(p => ({
+      // const data = response.data.map(p => ({
+      const data = response.map(p => ({
         ...p,
         priceFormatted: Numeral(p.price).format('$0,0.00'),
       }));

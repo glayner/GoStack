@@ -22,7 +22,8 @@ module.exports = {
   },
   plugins: [
     'react',
-    'prettier'
+    'prettier',
+    'react-hooks'
   ],
   rules: {
      // aponta todas as regras que ele não bater com o codigo como um erro
@@ -39,6 +40,9 @@ module.exports = {
      // permitir que use console.tron
      'no-console': ["error", {allow: ["tron"]}],
      // permitir que altere parametro recebido na função
-     'no-param-reassign': 'off'
+     'no-param-reassign': 'off',
+
+     'react-hooks/rules-of-hooks': 'error',
+     'react-hooks/exhaustive-deps': 'warn'
   },
 };

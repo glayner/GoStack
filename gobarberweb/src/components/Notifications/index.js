@@ -53,7 +53,7 @@ export default function Notifications() {
       )
     );
   }
-
+  console.tron.log(notifications);
   return (
     <Container>
       <Badge hasUnread={hasUnread} onClick={handleToogleVisible}>

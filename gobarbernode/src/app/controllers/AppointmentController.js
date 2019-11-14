@@ -1,12 +1,16 @@
 import * as Yup from 'yup';
-import { startOfHour, parseISO, isBefore, format, subHours } from 'date-fns';
-import pt from 'date-fns/locale/pt';
-import Notification from '../schemas/Notifications';
+import { startOfHour, format, parseISO, isBefore, subHours } from 'date-fns';
+import pt from 'date-fns/locale/pt-BR';
+
 import User from '../models/User';
 import Appointment from '../models/Appointment';
 import File from '../models/File';
-import Queue from '../../lib/Queue';
+
+import Notification from '../schemas/Notifications';
+
 import CancellationMail from '../jobs/CancellationMail';
+
+import Queue from '../../lib/Queue';
 
 class AppointmentController {
   async store(req, res) {
@@ -68,7 +72,7 @@ class AppointmentController {
     });
 
     await Notification.create({
-      content: `Novo agendamento de ${user.name} para ${formattedDate}}`,
+      content: `Novo agendamento de ${user.name} para ${formattedDate}`,
       user: provider_id,
     });
 

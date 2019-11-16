@@ -1,97 +1,65 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { MdAdd } from 'react-icons/md';
-import { Container, Title, Content } from '~/components/Default/styles';
+
+import { formatPrice } from '~/util/format';
+import api from '~/services/api';
+import { Container, Cover, Title, Content } from '~/components/Lists/styles';
 
 export default function Plan() {
+  const [plans, setPlans] = useState([]);
+
+  useEffect(() => {
+    async function loadPlans() {
+      const response = await api.get('plans');
+      const data = response.data.map(plan => ({
+        ...plan,
+        durationFormatted:
+          plan.duration === 1
+            ? `${plan.duration} mês`
+            : `${plan.duration} meses`,
+        priceFormatted: formatPrice(plan.price)
+      }));
+      setPlans(data);
+    }
+    loadPlans();
+  }, []);
   return (
     <Container>
-      <Title>
-        <h1>Gerenciando Planos</h1>
-        <Link className="register" to="/planregister">
-          <MdAdd size={20} color="#FFF" /> <span> CADASTRAR</span>
-        </Link>
-      </Title>
-      <Content>
-        <thead>
-          <tr>
-            <td>titulo 1</td>
-            <td>titulo 2</td>
-            <td>titulo 3</td>
-            <td>titulo 4</td>
-            <td>titulo 5</td>
-            <td>link</td>
-            <td>botão</td>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>linha 1</td>
-            <td>linha 1</td>
-            <td>linha 1</td>
-            <td>linha 1</td>
-            <td>linha 1</td>
-            <td>
-              <a href="/">Editar</a>
-            </td>
-            <td>
-              <button type="button">Excluir</button>
-            </td>
-          </tr>
-          <tr>
-            <td>linha 2</td>
-            <td>linha 2</td>
-            <td>linha 2</td>
-            <td>linha 2</td>
-            <td>linha 2</td>
-            <td>
-              <a href="/">Editar</a>
-            </td>
-            <td>
-              <button type="button">Excluir</button>
-            </td>
-          </tr>
-          <tr>
-            <td>linha 3</td>
-            <td>linha 3</td>
-            <td>linha 3</td>
-            <td>linha 3</td>
-            <td>linha 3</td>
-            <td>
-              <a href="/">Editar</a>
-            </td>
-            <td>
-              <button type="button">Excluir</button>
-            </td>
-          </tr>
-          <tr>
-            <td>linha 4</td>
-            <td>linha 4</td>
-            <td>linha 4</td>
-            <td>linha 4</td>
-            <td>linha 4</td>
-            <td>
-              <a href="/">Editar</a>
-            </td>
-            <td>
-              <button type="button">Excluir</button>
-            </td>
-          </tr>
-          <tr>
-            <td>linha 5</td>
-            <td>linha 5</td>
-            <td>linha 5</td>
-            <td>linha 5</td>
-            <td>linha 5</td>
-            <td>
-              <a href="/">Editar</a>
-            </td>
-            <td>
-              <button type="button">Excluir</button>
-            </td>
-          </tr>
-        </tbody>
-      </Content>
+      <Cover>
+        <Title>
+          <h1>Gerenciando Planos</h1>
+          <Link className="register" to="/planregister">
+            <MdAdd size={20} color="#FFF" /> <span> CADASTRAR</span>
+          </Link>
+        </Title>
+        <Content>
+          <table>
+            <thead>
+              <tr>
+                <td>Título</td>
+                <td>Duração</td>
+                <td>Valor p/ mês</td>
+                <td />
+              </tr>
+            </thead>
+            <tbody>
+              {plans.map(plan => (
+                <tr>
+                  <td>{plan.title}</td>
+                  <td>{plan.durationFormatted}</td>
+                  <td>{plan.priceFormatted}</td>
+                  <td>
+                    <a href={`/planmanage?id=${plan.id}`}>editar</a>
+
+                    <button type="button">apagar</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Content>
+      </Cover>
     </Container>
   );
 }

@@ -5,20 +5,24 @@ export const Container = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  margin-bottom: 30px;
+`;
+
+export const Cover = styled.div`
+  max-width: 1200px;
+  min-width: 700px;
 `;
 
 export const Title = styled.div`
   display: flex;
   justify-content: space-between;
-  width: 100%;
-  max-width: 900px;
   margin: 40px auto 20px;
+  width: 100%;
 `;
 
-export const Content = styled.table`
+export const Content = styled.div`
   width: 100%;
-  height: 100%;
-  max-width: 900px;
   padding: 20px;
-  text-align: center;
+  background: #fff;
+  border-radius: 4px;
 `;

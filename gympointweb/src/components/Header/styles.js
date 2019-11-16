@@ -44,6 +44,10 @@ export const Content = styled.div`
       &.selected {
         color: #444;
       }
+
+      &:hover {
+        color: #444;
+      }
     }
   }
 

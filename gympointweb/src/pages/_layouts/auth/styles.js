@@ -41,8 +41,10 @@ export const Content = styled.div`
       background: rgba(255, 255, 255, 0.7);
       border: 1px solid #aaa;
       border-radius: 4px;
-      height: 44px;
+      height: 45px;
+      width: 300px;
       padding: 0 15px;
+      font-size: 16px;
       color: #444;
       margin: 0 0 10px;
 
@@ -53,7 +55,8 @@ export const Content = styled.div`
 
     button {
       margin: 5px 0 0;
-      height: 44px;
+      height: 45px;
+      width: 300px;
       background: #ee4d64;
       font-weight: bold;
       color: #fff;
@@ -64,17 +67,6 @@ export const Content = styled.div`
 
       &:hover {
         background: ${darken(0.05, '#ee4d64')};
-      }
-    }
-
-    a {
-      color: #fff;
-      margin-top: 15px;
-      font-size: 16px;
-      opacity: 0.8;
-
-      &:hover {
-        opacity: 1;
       }
     }
   }

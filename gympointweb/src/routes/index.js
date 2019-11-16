@@ -36,7 +36,7 @@ export default function Routes() {
       <Route path="/planregister" component={RegisterPlan} isPrivate />
 
       <Route path="/student" component={Student} isPrivate />
-      <Route path="/studentmanage" component={ManageStudent} isPrivate />
+      <Route path="/studentmanage/:name" component={ManageStudent} isPrivate />
       <Route path="/studentregister" component={RegisterStudent} isPrivate />
 
       <Route path="/suport" component={Suport} isPrivate />

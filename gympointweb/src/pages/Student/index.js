@@ -4,7 +4,7 @@ import { MdAdd, MdSearch } from 'react-icons/md';
 import { Form, Input } from '@rocketseat/unform';
 
 import api from '~/services/api';
-import { Container, Cover, Title, Content } from '~/components/Lists/styles';
+import { Container, Cover, Title, Content } from '~/components/Default/styles';
 
 import { Search } from './styles';
 
@@ -12,25 +12,34 @@ export default function Student() {
   const [students, setStudents] = useState([]);
   const [name, setName] = useState('');
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  async function loadStudents() {
+    const response = await api.get('students', {
+      params: { name }
+    });
+    setStudents(response.data);
+  }
   useEffect(() => {
-    async function loadStudents() {
-      const response = await api.get('students', {
-        params: { name }
-      });
-      setStudents(response.data);
-    }
-
     loadStudents();
-  }, [name]);
+  }, [loadStudents]);
 
   function handleSearch({ nameSearch }) {
     setName(nameSearch);
+  }
+
+  async function handleDelete(id) {
+    // eslint-disable-next-line no-alert
+    const result = window.confirm('Certeza que deseja deletar?');
+    if (result) {
+      await api.delete(`students/${id}`);
+      loadStudents();
+    }
   }
   return (
     <Container>
       <Cover>
         <Title>
-          <h1>Gerenciar Alunos</h1>
+          <h1>Gerenciando alunos</h1>
           <Search>
             <Link className="register" to="/studentregister">
               <MdAdd size={20} color="#FFF" /> <span> CADASTRAR</span>
@@ -61,7 +70,12 @@ export default function Student() {
                   <td>{student.age}</td>
                   <td>
                     <Link to={`/studentmanage/${student.name}`}>editar</Link>
-                    <button type="button">apagar</button>
+                    <button
+                      type="submit"
+                      onClick={() => handleDelete(student.id)}
+                    >
+                      apagar
+                    </button>
                   </td>
                 </tr>
               ))}

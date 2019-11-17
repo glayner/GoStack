@@ -4,26 +4,34 @@ import { MdAdd } from 'react-icons/md';
 
 import { formatPrice } from '~/util/format';
 import api from '~/services/api';
-import { Container, Cover, Title, Content } from '~/components/Lists/styles';
+import { Container, Cover, Title, Content } from '~/components/Default/styles';
 
 export default function Plan() {
   const [plans, setPlans] = useState([]);
 
+  async function loadPlans() {
+    const response = await api.get('plans');
+    const data = response.data.map(plan => ({
+      ...plan,
+      durationFormatted:
+        plan.duration === 1 ? `${plan.duration} mês` : `${plan.duration} meses`,
+      priceFormatted: formatPrice(plan.price)
+    }));
+    setPlans(data);
+  }
+
   useEffect(() => {
-    async function loadPlans() {
-      const response = await api.get('plans');
-      const data = response.data.map(plan => ({
-        ...plan,
-        durationFormatted:
-          plan.duration === 1
-            ? `${plan.duration} mês`
-            : `${plan.duration} meses`,
-        priceFormatted: formatPrice(plan.price)
-      }));
-      setPlans(data);
-    }
     loadPlans();
   }, []);
+
+  async function handleDelete(id) {
+    // eslint-disable-next-line no-alert
+    const result = window.confirm('Certeza que deseja deletar?');
+    if (result) {
+      await api.delete(`plans/${id}`);
+      loadPlans();
+    }
+  }
   return (
     <Container>
       <Cover>
@@ -50,9 +58,11 @@ export default function Plan() {
                   <td>{plan.durationFormatted}</td>
                   <td>{plan.priceFormatted}</td>
                   <td>
-                    <a href={`/planmanage?id=${plan.id}`}>editar</a>
+                    <a href={`/planmanage/${plan.id}`}>editar</a>
 
-                    <button type="button">apagar</button>
+                    <button type="button" onClick={() => handleDelete(plan.id)}>
+                      apagar
+                    </button>
                   </td>
                 </tr>
               ))}

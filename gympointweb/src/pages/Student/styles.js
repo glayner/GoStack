@@ -3,7 +3,6 @@ import styled from 'styled-components';
 export const Container = styled.div``;
 
 export const Search = styled.div`
-  display: flex;
   form {
     margin-left: 15px;
     border: 1px solid #aaa;

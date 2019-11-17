@@ -20,7 +20,7 @@ export default function RouteWrapper({
   }
 
   if (signed && !isPrivate) {
-    return <Redirect to="/suport" />;
+    return <Redirect to="/student" />;
   }
 
   return (

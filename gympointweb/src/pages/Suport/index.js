@@ -1,8 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { Container, Cover, Title, Content } from '~/components/Lists/styles';
+import api from '~/services/api';
+import { Container, Cover, Title, Content } from '~/components/Default/styles';
 
 export default function Suport() {
+  const [helpOrder, setHelpOrder] = useState([]);
+
+  useEffect(() => {
+    async function loadStuport() {
+      const response = await api.get('/students/help-orders');
+      setHelpOrder(response.data);
+    }
+    loadStuport();
+  }, []);
+  console.tron.log(helpOrder);
+
   return (
     <Container>
       <Cover>
@@ -18,40 +30,14 @@ export default function Suport() {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Thiago Glayner Cunha Rodrigues 1</td>
-                <td>
-                  <a href="/">responder</a>
-                </td>
-              </tr>
-              <tr>
-                <td>Thiago Glayner Cunha Rodrigues 2</td>
-
-                <td>
-                  <a href="/">responder</a>
-                </td>
-              </tr>
-              <tr>
-                <td>Thiago Glayner Cunha Rodrigues 3</td>
-
-                <td>
-                  <a href="/">responder</a>
-                </td>
-              </tr>
-              <tr>
-                <td>Thiago Glayner Cunha Rodrigues 4</td>
-
-                <td>
-                  <a href="/">responder</a>
-                </td>
-              </tr>
-              <tr>
-                <td>Thiago Glayner Cunha Rodrigues 5</td>
-
-                <td>
-                  <a href="/">responder</a>
-                </td>
-              </tr>
+              {helpOrder.map(suport => (
+                <tr>
+                  <td>{suport.student.name}</td>
+                  <td>
+                    <a href="/">responder</a>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </Content>

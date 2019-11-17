@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { MdAdd, MdCheckCircle } from 'react-icons/md';
 
 import api from '~/services/api';
-import { Container, Cover, Title, Content } from '~/components/Lists/styles';
+import { Container, Cover, Title, Content } from '~/components/Default/styles';
 
 export default function Enrollment() {
   const [enrollments, setEnrollments] = useState([]);

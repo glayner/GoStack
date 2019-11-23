@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { MdCheck, MdKeyboardArrowLeft } from 'react-icons/md';
 import { Form, Input } from '@rocketseat/unform';
 
-import { Container, Cover, Title, Content } from '~/components/Default/styles';
+import { Container, Cover, Title, Content } from '~/styles/default';
 
 export default function ManageEnrollment() {
   return (

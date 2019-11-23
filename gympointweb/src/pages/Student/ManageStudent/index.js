@@ -8,12 +8,7 @@ import * as Yup from 'yup';
 import api from '~/services/api';
 import history from '~/services/history';
 
-import {
-  Container,
-  Title,
-  Content,
-  Formcontent
-} from '~/components/Default/styles';
+import { Container, Title, Content, Formcontent } from '~/styles/default';
 
 const schema = Yup.object().shape({
   name: Yup.string().required('O nome é obrigatório'),

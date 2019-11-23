@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import api from '~/services/api';
-import { Container, Cover, Title, Content } from '~/components/Default/styles';
+import { Container, Cover, Title, Content } from '~/styles/default';
 
 export default function Suport() {
   const [helpOrder, setHelpOrder] = useState([]);
@@ -31,7 +31,7 @@ export default function Suport() {
             </thead>
             <tbody>
               {helpOrder.map(suport => (
-                <tr>
+                <tr key={suport.id}>
                   <td>{suport.student.name}</td>
                   <td>
                     <a href="/">responder</a>

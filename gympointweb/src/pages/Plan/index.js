@@ -4,7 +4,7 @@ import { MdAdd } from 'react-icons/md';
 
 import { formatPrice } from '~/util/format';
 import api from '~/services/api';
-import { Container, Cover, Title, Content } from '~/components/Default/styles';
+import { Container, Cover, Title, Content } from '~/styles/default';
 
 export default function Plan() {
   const [plans, setPlans] = useState([]);
@@ -53,7 +53,7 @@ export default function Plan() {
             </thead>
             <tbody>
               {plans.map(plan => (
-                <tr>
+                <tr key={plan.id}>
                   <td>{plan.title}</td>
                   <td>{plan.durationFormatted}</td>
                   <td>{plan.priceFormatted}</td>

@@ -89,6 +89,8 @@ export const Content = styled.div`
         padding: 10px 150px 10px 0;
       }
       td {
+        max-width: 500px;
+        overflow: hidden;
         font-size: 16px;
         text-align: center;
         color: #666;
@@ -121,9 +123,8 @@ export const Content = styled.div`
     }
   }
 `;
+
 export const Formcontent = styled(Form)`
-  max-width: 1200px;
-  min-width: 700px;
   label {
     padding: 10px;
     display: flex;
@@ -145,6 +146,7 @@ export const Formcontent = styled(Form)`
       color: #666;
       margin-top: 8px;
     }
+
     input.readOnly {
       background: #f5f5f5;
     }

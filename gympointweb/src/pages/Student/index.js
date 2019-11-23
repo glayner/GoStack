@@ -4,7 +4,7 @@ import { MdAdd, MdSearch } from 'react-icons/md';
 import { Form, Input } from '@rocketseat/unform';
 
 import api from '~/services/api';
-import { Container, Cover, Title, Content } from '~/components/Default/styles';
+import { Container, Cover, Title, Content } from '~/styles/default';
 
 import { Search } from './styles';
 
@@ -19,9 +19,11 @@ export default function Student() {
     });
     setStudents(response.data);
   }
+
   useEffect(() => {
     loadStudents();
-  }, [loadStudents]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function handleSearch({ nameSearch }) {
     setName(nameSearch);
@@ -64,7 +66,7 @@ export default function Student() {
             </thead>
             <tbody>
               {students.map(student => (
-                <tr>
+                <tr key={student.id}>
                   <td>{student.name}</td>
                   <td>{student.email}</td>
                   <td>{student.age}</td>

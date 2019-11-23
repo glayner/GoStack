@@ -12,6 +12,9 @@ export const Content = styled.div`
   justify-content: space-between;
   align-items: center;
 
+  overflow-y: hidden;
+  overflow-x: auto;
+
   nav {
     display: flex;
     align-items: center;

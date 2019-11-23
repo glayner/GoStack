@@ -6,22 +6,23 @@ import * as Yup from 'yup';
 
 import { formatPrice } from '~/util/format';
 import api from '~/services/api';
-import history from '~/services/history';
+// import history from '~/services/history';
 
-import {
-  Container,
-  Title,
-  Content,
-  Formcontent
-} from '~/components/Default/styles';
+import InputAsyncSelect from '~/components/InputAsyncSelect';
+
+import { Container, Title, Content, Formcontent } from '~/styles/default';
 
 const schema = Yup.object().shape({
-  title: Yup.string().required('O titulo é obrigatório'),
-  duration: Yup.number()
+  student: Yup.object()
+    .shape({
+      value: Yup.number().integer()
+    })
+    .typeError('Valor inválido'),
+  plan: Yup.number()
     .integer('somente numeros inteiros')
     .typeError('Valor inválido')
     .required(),
-  price: Yup.number()
+  start_date: Yup.number()
     .typeError('Valor inválido')
     .required()
 });
@@ -36,10 +37,12 @@ export default function RegisterEnrollment() {
   }, [price, duration]);
 
   async function handleSubmit(data) {
-    await api.post('entrollments', {
-      ...data
-    });
-    history.push('/enrollment');
+    // await api.post('entrollments', {
+    //   ...data
+    // });
+    // history.push('/enrollment');
+
+    console.tron.log(data);
   }
 
   function priceChanged(e) {
@@ -49,6 +52,20 @@ export default function RegisterEnrollment() {
   function durationChanged(e) {
     setDuration(e);
   }
+
+  async function loadOptions(inputValue) {
+    const response = await api
+      .get('students', { params: { name: `${inputValue}` } })
+      .then(r => r.data)
+      .then(r =>
+        r.map(student => ({
+          label: student.name,
+          value: student.id
+        }))
+      );
+    return response;
+  }
+
   return (
     <Container>
       <Formcontent schema={schema} onSubmit={handleSubmit}>
@@ -65,16 +82,18 @@ export default function RegisterEnrollment() {
           </div>
         </Title>
         <Content>
-          <label>
-            Aluno
-            <Input type="text" name="student_id" placeholder="Buscar Aluno" />
-          </label>
+          <InputAsyncSelect
+            name="student"
+            loadOptions={loadOptions}
+            label="ALUNO"
+          />
+
           <div>
             <label>
               PLANO
               <Input
                 type="number"
-                name="duration"
+                name="plan"
                 onChange={e => durationChanged(e.target.value)}
                 placeholder="Selecione o plano"
               />
@@ -84,7 +103,7 @@ export default function RegisterEnrollment() {
               <Input
                 type="number"
                 step="0.01"
-                name="price"
+                name="start_date"
                 onChange={e => priceChanged(e.target.value)}
                 placeholder="Escolha a data"
               />

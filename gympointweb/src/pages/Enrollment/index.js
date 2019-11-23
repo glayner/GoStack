@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { MdAdd, MdCheckCircle } from 'react-icons/md';
 
 import api from '~/services/api';
-import { Container, Cover, Title, Content } from '~/components/Default/styles';
+import { Container, Cover, Title, Content } from '~/styles/default';
 
 export default function Enrollment() {
   const [enrollments, setEnrollments] = useState([]);
@@ -58,7 +58,7 @@ export default function Enrollment() {
             </thead>
             <tbody>
               {enrollments.map(enrollment => (
-                <tr>
+                <tr key={enrollment.id}>
                   <td>{enrollment.student.name}</td>
                   <td>{enrollment.plan.title}</td>
                   <td>{enrollment.startDateFormatted}</td>

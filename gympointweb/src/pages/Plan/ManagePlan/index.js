@@ -9,12 +9,7 @@ import { formatPrice } from '~/util/format';
 import api from '~/services/api';
 import history from '~/services/history';
 
-import {
-  Container,
-  Formcontent,
-  Title,
-  Content
-} from '~/components/Default/styles';
+import { Container, Formcontent, Title, Content } from '~/styles/default';
 
 const schema = Yup.object().shape({
   title: Yup.string().required('O titulo é obrigatório'),

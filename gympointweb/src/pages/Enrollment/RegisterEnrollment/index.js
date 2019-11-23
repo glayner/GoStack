@@ -1,5 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { format, addMonths } from 'date-fns';
+
+import pt from 'date-fns/locale/pt-BR';
+
 import { MdCheck, MdKeyboardArrowLeft } from 'react-icons/md';
 import { Input } from '@rocketseat/unform';
 import * as Yup from 'yup';
@@ -9,6 +13,8 @@ import api from '~/services/api';
 // import history from '~/services/history';
 
 import InputAsyncSelect from '~/components/InputAsyncSelect';
+import DatePicker from '~/components/InputDatePicker';
+import ReactSelect from '~/components/InputSelect';
 
 import { Container, Title, Content, Formcontent } from '~/styles/default';
 
@@ -17,24 +23,70 @@ const schema = Yup.object().shape({
     .shape({
       value: Yup.number().integer()
     })
-    .typeError('Valor inválido'),
-  plan: Yup.number()
-    .integer('somente numeros inteiros')
     .typeError('Valor inválido')
-    .required(),
-  start_date: Yup.number()
+    .required('Aluno obrigatório'),
+  plan: Yup.object()
+    .shape({
+      value: Yup.number().integer()
+    })
     .typeError('Valor inválido')
-    .required()
+    .required('Aluno obrigatório'),
+  start_date: Yup.date()
+    .typeError('Valor inválido')
+    .required('Data obrigatória')
 });
 
 export default function RegisterEnrollment() {
-  const [price, setPrice] = useState(null);
-  const [duration, setDuration] = useState(null);
-  const [totalPrice, setTotalPrice] = useState('');
+  const [startDate, setStartDate] = useState(new Date());
+  const [plans, setPlans] = useState({});
+  const [plan, setPlan] = useState({});
+  const [initialData, setInitialData] = useState({});
+
+  async function loadPlans() {
+    const response = await api
+      .get('plans')
+      .then(r => r.data)
+      .then(r =>
+        r.map(p => ({
+          label: p.title,
+          value: p.id,
+          duration: p.duration,
+          price: p.price
+        }))
+      );
+
+    setPlans(response);
+  }
+
+  const end_date = useMemo(() => {
+    if (!plan.duration) {
+      return '';
+    }
+    const { duration } = plan;
+    const formattedDate = format(
+      addMonths(startDate, duration),
+      "dd'/'MM'/'yyyy",
+      {
+        locale: pt
+      }
+    );
+    return formattedDate;
+  }, [plan, startDate]);
+
+  const totalPrice = useMemo(() => {
+    if (!plan.price) return '';
+
+    return formatPrice(Number(plan.duration) * Number(plan.price));
+  }, [plan.duration, plan.price]);
 
   useEffect(() => {
-    setTotalPrice(formatPrice(price * duration));
-  }, [price, duration]);
+    loadPlans();
+
+    setInitialData({
+      end_date,
+      totalPrice
+    });
+  }, [end_date, totalPrice]);
 
   async function handleSubmit(data) {
     // await api.post('entrollments', {
@@ -43,14 +95,6 @@ export default function RegisterEnrollment() {
     // history.push('/enrollment');
 
     console.tron.log(data);
-  }
-
-  function priceChanged(e) {
-    setPrice(e);
-  }
-
-  function durationChanged(e) {
-    setDuration(e);
   }
 
   async function loadOptions(inputValue) {
@@ -68,7 +112,11 @@ export default function RegisterEnrollment() {
 
   return (
     <Container>
-      <Formcontent schema={schema} onSubmit={handleSubmit}>
+      <Formcontent
+        schema={schema}
+        onSubmit={handleSubmit}
+        initialData={initialData}
+      >
         <Title>
           <h1>Cadástro de matrículas</h1>
           <div>
@@ -88,43 +136,31 @@ export default function RegisterEnrollment() {
             label="ALUNO"
           />
 
-          <div>
+          <div className="formline">
             <label>
-              PLANO
-              <Input
-                type="number"
-                name="plan"
-                onChange={e => durationChanged(e.target.value)}
-                placeholder="Selecione o plano"
-              />
+              <strong> PLANO</strong>
+              <ReactSelect name="plan" options={plans} setChange={setPlan} />
             </label>
             <label>
-              DATA DE INÍCIO
-              <Input
-                type="number"
-                step="0.01"
-                name="start_date"
-                onChange={e => priceChanged(e.target.value)}
-                placeholder="Escolha a data"
-              />
+              <strong>DATA DE INÍCIO</strong>
+              <DatePicker name="start_date" setChange={setStartDate} />
             </label>
             <label>
-              DATA DE TÉRMINO
+              <strong> DATA DE TÉRMINO</strong>
               <Input
-                type="text"
-                name="totalPrice"
+                type="data"
+                name="end_date"
                 readOnly
                 className="readOnly"
               />
             </label>
             <label>
-              VALOR FINAL
+              <strong> VALOR FINAL</strong>
               <Input
                 type="text"
                 name="totalPrice"
                 readOnly
                 className="readOnly"
-                value={totalPrice}
               />
             </label>
           </div>

@@ -11,8 +11,8 @@ export const Container = styled.div`
 `;
 
 export const Cover = styled.div`
-  max-width: 1200px;
-  min-width: 700px;
+  /* max-width: 1200px;
+  min-width: 700px; */
 `;
 
 export const Title = styled.div`
@@ -134,7 +134,6 @@ export const Formcontent = styled(Form)`
     color: #444;
     font-size: 14px;
     font-weight: bold;
-
     input {
       border: 1px solid #ddd;
       background: #fff;
@@ -145,6 +144,7 @@ export const Formcontent = styled(Form)`
       padding: 10px;
       color: #666;
       margin-top: 8px;
+      font-weight: normal;
     }
 
     input.readOnly {
@@ -156,8 +156,12 @@ export const Formcontent = styled(Form)`
       font-weight: normal;
     }
   }
-  div {
+  div.formline {
     display: flex;
+
+    strong {
+      margin-bottom: auto;
+    }
   }
   button.register {
     border: 0;

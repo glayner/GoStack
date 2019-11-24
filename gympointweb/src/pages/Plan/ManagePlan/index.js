@@ -26,7 +26,6 @@ const schema = Yup.object().shape({
 
 export default function ManagePlan({ match }) {
   const { id } = match.params;
-
   const [price, setPrice] = useState(null);
   const [duration, setDuration] = useState(null);
   const [totalPrice, setTotalPrice] = useState('');
@@ -82,9 +81,9 @@ export default function ManagePlan({ match }) {
             TÍTULO DO PLANO
             <Input type="text" name="title" placeholder="titulo" />
           </label>
-          <div>
+          <div className="formline">
             <label>
-              DURAÇÃO (em meses)
+              <strong> DURAÇÃO (em meses)</strong>
               <Input
                 type="number"
                 name="duration"
@@ -93,7 +92,7 @@ export default function ManagePlan({ match }) {
               />
             </label>
             <label>
-              PREÇO MENSAL
+              <strong> PREÇO MENSAL</strong>
               <Input
                 type="number"
                 step="0.01"
@@ -103,7 +102,7 @@ export default function ManagePlan({ match }) {
               />
             </label>
             <label>
-              PREÇO TOTAL
+              <strong> PREÇO TOTAL</strong>
               <Input
                 type="text"
                 name="totalPrice"
@@ -119,5 +118,9 @@ export default function ManagePlan({ match }) {
   );
 }
 ManagePlan.propTypes = {
-  match: PropTypes.element.isRequired
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.string
+    }).isRequired
+  }).isRequired
 };

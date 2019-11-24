@@ -64,9 +64,9 @@ export default function RegisterPlan() {
             TÍTULO DO PLANO
             <Input type="text" name="title" placeholder="titulo" />
           </label>
-          <div>
+          <div className="formline">
             <label>
-              DURAÇÃO (em meses)
+              <strong> DURAÇÃO (em meses)</strong>
               <Input
                 type="number"
                 name="duration"
@@ -75,7 +75,7 @@ export default function RegisterPlan() {
               />
             </label>
             <label>
-              PREÇO MENSAL
+              <strong>PREÇO MENSAL</strong>
               <Input
                 type="number"
                 step="0.01"
@@ -85,7 +85,7 @@ export default function RegisterPlan() {
               />
             </label>
             <label>
-              PREÇO TOTAL
+              <strong> PREÇO TOTAL</strong>
               <Input
                 type="text"
                 name="totalPrice"

@@ -13,7 +13,8 @@ export default function ReactSelect({ name, options, setChange }) {
   useEffect(() => {
     registerField({
       name: fieldName,
-      ref: ref.current
+      ref: ref.current,
+      path: 'state.value'
     });
   }, [ref.current, fieldName]); // eslint-disable-line
 

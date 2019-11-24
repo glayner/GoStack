@@ -24,7 +24,11 @@ export default function Routes() {
       <Route path="/" exact component={Sign} />
 
       <Route path="/enrollment" component={Enrollment} isPrivate />
-      <Route path="/enrollmentmanage" component={ManageEnrollment} isPrivate />
+      <Route
+        path="/enrollmentmanage/:id"
+        component={ManageEnrollment}
+        isPrivate
+      />
       <Route
         path="/enrollmentregister"
         component={RegisterEnrollment}

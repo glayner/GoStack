@@ -10,30 +10,40 @@ import { Container, Cover, Title, Content } from '~/styles/default';
 export default function Enrollment() {
   const [enrollments, setEnrollments] = useState([]);
 
+  async function loadEnrollment() {
+    const response = await api.get('enrollments');
+    const data = response.data.map(enrollment => ({
+      ...enrollment,
+      startDateFormatted: format(
+        parseISO(enrollment.start_date),
+        "dd 'de' MMMM 'de' yyyy",
+        {
+          locale: pt
+        }
+      ),
+      endDateFormatted: format(
+        parseISO(enrollment.end_date),
+        "dd 'de' MMMM 'de' yyyy",
+        {
+          locale: pt
+        }
+      )
+    }));
+    setEnrollments(data);
+  }
+
   useEffect(() => {
-    async function loadEnrollment() {
-      const response = await api.get('enrollments');
-      const data = response.data.map(enrollment => ({
-        ...enrollment,
-        startDateFormatted: format(
-          parseISO(enrollment.start_date),
-          "dd 'de' MMMM 'de' yyyy",
-          {
-            locale: pt
-          }
-        ),
-        endDateFormatted: format(
-          parseISO(enrollment.end_date),
-          "dd 'de' MMMM 'de' yyyy",
-          {
-            locale: pt
-          }
-        )
-      }));
-      setEnrollments(data);
-    }
     loadEnrollment();
   }, []);
+
+  async function handleDelete(id) {
+    // eslint-disable-next-line no-alert
+    const result = window.confirm('Certeza que deseja deletar?');
+    if (result) {
+      await api.delete(`enrollments/${id}`);
+      loadEnrollment();
+    }
+  }
 
   return (
     <Container>
@@ -60,7 +70,7 @@ export default function Enrollment() {
               {enrollments.map(enrollment => (
                 <tr key={enrollment.id}>
                   <td>{enrollment.student.name}</td>
-                  <td>{enrollment.plan.title}</td>
+                  <td>{enrollment.plan ? enrollment.plan.title : 'deleted'}</td>
                   <td>{enrollment.startDateFormatted}</td>
                   <td>{enrollment.endDateFormatted}</td>
                   <td>
@@ -70,11 +80,13 @@ export default function Enrollment() {
                     />
                   </td>
                   <td>
-                    <Link to={`/enrollmentmanage/${enrollment.id}`}>
-                      editar
-                    </Link>
-
-                    <button type="button">apagar</button>
+                    <a href={`/enrollmentmanage/${enrollment.id}`}>editar</a>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(enrollment.id)}
+                    >
+                      apagar
+                    </button>
                   </td>
                 </tr>
               ))}

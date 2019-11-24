@@ -53,13 +53,13 @@ export default function RegisterStudent() {
             ENDEREÇO DE E-MAIL
             <Input type="text" name="email" placeholder="E-mail" />
           </label>
-          <div>
+          <div className="formline">
             <label>
-              IDADE
+              <strong>IDADE </strong>
               <Input type="number" name="age" placeholder="idade" />
             </label>
             <label>
-              PESO (em kg)
+              <strong> PESO (em kg) </strong>
               <Input
                 type="number"
                 step="0.01"
@@ -68,7 +68,7 @@ export default function RegisterStudent() {
               />
             </label>
             <label>
-              ALTURA
+              <strong>ALTURA </strong>
               <Input
                 type="number"
                 step="0.01"

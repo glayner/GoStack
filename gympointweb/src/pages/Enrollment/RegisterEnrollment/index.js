@@ -1,6 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { format, addMonths } from 'date-fns';
+import {
+  format,
+  addMonths,
+  setHours,
+  setMinutes,
+  setSeconds,
+  addSeconds
+} from 'date-fns';
 
 import pt from 'date-fns/locale/pt-BR';
 
@@ -10,7 +17,7 @@ import * as Yup from 'yup';
 
 import { formatPrice } from '~/util/format';
 import api from '~/services/api';
-// import history from '~/services/history';
+import history from '~/services/history';
 
 import InputAsyncSelect from '~/components/InputAsyncSelect';
 import DatePicker from '~/components/InputDatePicker';
@@ -86,15 +93,31 @@ export default function RegisterEnrollment() {
       end_date,
       totalPrice
     });
-  }, [end_date, totalPrice]);
+  }, [end_date, startDate, totalPrice]);
 
   async function handleSubmit(data) {
-    // await api.post('entrollments', {
-    //   ...data
-    // });
-    // history.push('/enrollment');
-
-    console.tron.log(data);
+    try {
+      const dateNow = new Date();
+      const startDateNow = addSeconds(
+        setSeconds(
+          setMinutes(
+            setHours(data.start_date, dateNow.getHours()),
+            dateNow.getMinutes()
+          ),
+          dateNow.getSeconds()
+        ),
+        5
+      );
+      await api.post('enrollments', {
+        student_id: data.student.value,
+        plan_id: data.plan.value,
+        start_date: startDateNow
+      });
+      history.push('/enrollment');
+    } catch (e) {
+      console.tron.log(e);
+      console.tron.log(startDate);
+    }
   }
 
   async function loadOptions(inputValue) {

@@ -38,8 +38,8 @@ export default function DatePicker({ name, setChange }) {
         selected={selected}
         onChange={date => handleChange(date)}
         locale={pt}
-        placeholderText="Escolha a data"
         defaultValue
+        placeholderText="Escolha a data"
         ref={ref}
         dateFormat="P"
       />

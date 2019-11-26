@@ -6,9 +6,13 @@ import Select from 'react-select';
 import { Container } from './styles';
 
 export default function ReactSelect({ name, options, setChange }) {
-  const ref = useRef(null);
   const { fieldName, registerField, defaultValue, error } = useField(name);
-  const [value, setValue] = useState(defaultValue);
+  const [value, setValue] = useState({});
+  const ref = useRef();
+
+  useEffect(() => {
+    setValue(defaultValue);
+  }, [defaultValue]);
 
   useEffect(() => {
     registerField({
@@ -28,11 +32,12 @@ export default function ReactSelect({ name, options, setChange }) {
   return (
     <Container>
       <Select
-        name="techs"
+        name={fieldName}
         options={options}
         value={value}
+        defaultValue
         placeholder="Selecione o plano"
-        onChange={data => handleChange(data)}
+        onChange={handleChange}
         ref={ref}
         className="selectInput"
       />

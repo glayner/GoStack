@@ -9,18 +9,19 @@ import { useField } from '@rocketseat/unform';
 import 'react-datepicker/dist/react-datepicker.css';
 
 export default function DatePicker({ name, setChange }) {
-  const ref = useRef(null);
   const { fieldName, registerField, defaultValue, error } = useField(name);
-  const [selected, setSelected] = useState(defaultValue);
+  const [selected, setSelected] = useState();
+  const ref = useRef();
+
+  useEffect(() => {
+    setSelected(defaultValue);
+  }, [defaultValue]);
 
   useEffect(() => {
     registerField({
       name: fieldName,
       ref: ref.current,
-      path: 'props.selected',
-      clearValue: pickerRef => {
-        pickerRef.clear();
-      }
+      path: 'props.selected'
     });
   }, [ref.current, fieldName]); // eslint-disable-line
 
@@ -36,7 +37,7 @@ export default function DatePicker({ name, setChange }) {
       <ReactDatePicker
         name={fieldName}
         selected={selected}
-        onChange={date => handleChange(date)}
+        onChange={handleChange}
         locale={pt}
         defaultValue
         placeholderText="Escolha a data"

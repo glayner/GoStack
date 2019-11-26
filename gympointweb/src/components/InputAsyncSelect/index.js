@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import AsyncSelect from 'react-select/async';
 
@@ -7,12 +7,16 @@ import { useField } from '@rocketseat/unform';
 import { Container } from './styles';
 
 export default function InputAsyncSelect({ name, label, loadOptions }) {
-  const ref = useRef(null);
   const { fieldName, registerField, defaultValue, error } = useField(name);
+  const [value, setValue] = useState({});
+  const ref = useRef();
 
   function parseSelectValue(selectRef) {
     return selectRef.select.state.value;
   }
+  useEffect(() => {
+    setValue(defaultValue);
+  }, [defaultValue]);
 
   useEffect(() => {
     registerField({
@@ -23,16 +27,21 @@ export default function InputAsyncSelect({ name, label, loadOptions }) {
     });
   }, [ref.current, fieldName]); // eslint-disable-line
 
+  function handleChange(e) {
+    setValue(e);
+  }
+
   return (
     <Container>
       {label && <label htmlFor={fieldName}>{label}</label>}
       <AsyncSelect
         name={fieldName}
         defaultValue
-        value={defaultValue}
+        value={value}
         ref={ref}
         loadOptions={loadOptions}
         defaultOptions
+        onChange={handleChange}
         placeholder="Buscar aluno"
         className="asyncSelectInput"
       />

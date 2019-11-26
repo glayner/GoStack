@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom';
 import {
   format,
   addMonths,
-  // setHours,
-  // setMinutes,
-  // setSeconds,
-  // addSeconds,
+  setHours,
+  setMinutes,
+  setSeconds,
+  addSeconds,
   parseISO
 } from 'date-fns';
 
@@ -19,7 +19,7 @@ import * as Yup from 'yup';
 
 import { formatPrice } from '~/util/format';
 import api from '~/services/api';
-// import history from '~/services/history';
+import history from '~/services/history';
 
 import InputAsyncSelect from '~/components/InputAsyncSelect';
 import DatePicker from '~/components/InputDatePicker';
@@ -48,6 +48,7 @@ const schema = Yup.object().shape({
 export default function ManageEnrollment({ match }) {
   const { id } = match.params;
   const [startDate, setStartDate] = useState();
+  const [newDate, setNewDate] = useState();
   const [plans, setPlans] = useState({});
   const [plan, setPlan] = useState({});
   const [newStudent, setNewStudent] = useState();
@@ -117,59 +118,76 @@ export default function ManageEnrollment({ match }) {
   }, [enrollment]);
 
   const end_date = useMemo(() => {
+    const start_date = newDate || startDate;
     if (!plan.duration) {
       return '';
     }
 
     const { duration } = plan;
-    console.tron.log(startDate);
-    console.tron.log(duration);
     const formattedDate = format(
-      addMonths(startDate, duration),
+      addMonths(start_date, duration),
       "dd'/'MM'/'yyyy",
       {
         locale: pt
       }
     );
     return formattedDate;
-  }, [plan, startDate]);
+  }, [newDate, plan, startDate]);
 
   const totalPrice = useMemo(() => {
     if (!plan.price) return '';
-
     return formatPrice(Number(plan.duration) * Number(plan.price));
   }, [plan.duration, plan.price]);
 
   useEffect(() => {
     setInitialData({
       end_date,
-      totalPrice
+      totalPrice,
+      plan,
+      start_date: startDate,
+      student: newStudent
     });
-  }, [end_date, newStudent, totalPrice]);
+  }, [end_date, newStudent, plan, startDate, totalPrice]);
 
   async function handleSubmit(data) {
-    // try {
-    //   const dateNow = new Date();
-    //   const startDateNow = addSeconds(
-    //     setSeconds(
-    //       setMinutes(
-    //         setHours(data.start_date, dateNow.getHours()),
-    //         dateNow.getMinutes()
-    //       ),
-    //       dateNow.getSeconds()
-    //     ),
-    //     5
-    //   );
-    //   await api.post('enrollments', {
-    //     student_id: data.student.value,
-    //     plan_id: data.plan.value,
-    //     start_date: startDateNow
-    //   });
-    //   history.push('/enrollment');
-    // } catch (e) {
-    //   console.tron.log(e);
-    // }
-    console.tron.log(data);
+    try {
+      const dateNow = new Date();
+      const startDateNow = addSeconds(
+        setSeconds(
+          setMinutes(
+            setHours(data.start_date, dateNow.getHours()),
+            dateNow.getMinutes()
+          ),
+          dateNow.getSeconds()
+        ),
+        5
+      );
+
+      let newData = {};
+      if (!newDate) {
+        newData = {
+          student_id: data.student.value
+            ? data.student.value
+            : newStudent.value,
+          plan_id: data.plan.value ? data.plan.value : plan.value
+        };
+      } else {
+        newData = {
+          student_id: data.student.value
+            ? data.student.value
+            : newStudent.value,
+          plan_id: data.plan.value ? data.plan.value : plan.value,
+          start_date: startDateNow
+        };
+      }
+
+      await api.post('enrollments', {
+        ...newData
+      });
+      history.push('/enrollment');
+    } catch (e) {
+      console.tron.log(e.response.data.error);
+    }
   }
 
   async function loadOptions(inputValue) {
@@ -208,18 +226,23 @@ export default function ManageEnrollment({ match }) {
           <InputAsyncSelect
             name="student"
             loadOptions={loadOptions}
-            defaultValue={newStudent}
+            // defaultValue={newStudent}
             label="ALUNO"
           />
 
           <div className="formline">
             <label>
               <strong> PLANO</strong>
-              <ReactSelect name="plan" options={plans} setChange={setPlan} />
+              <ReactSelect
+                name="plan"
+                defaultValue={{ label: 'planoteste', value: 1 }}
+                options={plans}
+                setChange={setPlan}
+              />
             </label>
             <label>
               <strong>DATA DE INÍCIO</strong>
-              <DatePicker name="start_date" setChange={setStartDate} />
+              <DatePicker name="start_date" setChange={setNewDate} />
             </label>
             <label>
               <strong> DATA DE TÉRMINO</strong>

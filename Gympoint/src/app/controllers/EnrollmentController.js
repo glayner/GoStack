@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { parseISO, addMonths, isBefore } from 'date-fns';
+import { parseISO, addMonths, isBefore, isAfter } from 'date-fns';
 import Enrollment from '../models/Enrollment';
 import Plan from '../models/Plan';
 import Student from '../models/Student';
@@ -99,8 +99,13 @@ class EnrollmentController {
       return res.status(400).json({ error: 'Student does not exists' });
     }
     // check past dates
-    if (isBefore(date, new Date())) {
-      return res.status(400).json({ error: 'Past dates are not permitted' });
+    if (
+      isBefore(date, enrollment.start_date) ||
+      isAfter(date, enrollment.start_date)
+    ) {
+      if (isBefore(date, new Date())) {
+        return res.status(400).json({ error: 'Past dates are not permitted' });
+      }
     }
     const price = plan.price * plan.duration;
     const end_date = addMonths(date, plan.duration);

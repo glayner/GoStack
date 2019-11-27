@@ -10,7 +10,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 export default function DatePicker({ name, setChange }) {
   const { fieldName, registerField, defaultValue, error } = useField(name);
-  const [selected, setSelected] = useState();
+  const [selected, setSelected] = useState(defaultValue && defaultValue);
   const ref = useRef();
 
   useEffect(() => {

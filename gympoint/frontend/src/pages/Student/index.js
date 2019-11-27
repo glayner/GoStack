@@ -28,6 +28,7 @@ export default function Student() {
 
   function handleSearch({ nameSearch }) {
     setName(nameSearch);
+    loadStudents();
   }
 
   async function handleDelete(id) {
@@ -36,6 +37,7 @@ export default function Student() {
       const result = window.confirm('Certeza que deseja deletar?');
       if (result) {
         await api.delete(`students/${id}`);
+        toast.success('successfully deleted');
         loadStudents();
       }
     } catch (e) {
@@ -55,7 +57,7 @@ export default function Student() {
               <button type="submit">
                 <MdSearch size={16} color="#999" />
               </button>
-              <Input type="text" name="nameSearch" placeholder="Buscar Aluno" />
+              <Input name="nameSearch" placeholder="Buscar Aluno" />
             </Form>
           </Search>
         </Title>

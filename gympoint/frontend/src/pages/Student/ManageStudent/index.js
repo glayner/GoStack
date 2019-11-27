@@ -47,6 +47,7 @@ export default function ManageStudent({ match }) {
       await api.put(`students/${student.id}`, {
         ...data
       });
+      toast.success('successfully edited');
       history.push('/student');
     } catch (e) {
       toast.error(e.response.data.error);

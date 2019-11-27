@@ -28,7 +28,9 @@ export default function RegisterPlan() {
   const [totalPrice, setTotalPrice] = useState('');
 
   useEffect(() => {
-    setTotalPrice(formatPrice(price * duration));
+    if (price && duration) {
+      setTotalPrice(formatPrice(price * duration));
+    }
   }, [price, duration]);
 
   async function handleSubmit(data) {
@@ -36,6 +38,7 @@ export default function RegisterPlan() {
       await api.post('plans', {
         ...data
       });
+      toast.success('successfully registered');
       history.push('/plan');
     } catch (e) {
       toast.error(e.response.data.error);
@@ -67,7 +70,7 @@ export default function RegisterPlan() {
         <Content>
           <label>
             TÍTULO DO PLANO
-            <Input type="text" name="title" placeholder="titulo" />
+            <Input type="text" name="title" />
           </label>
           <div className="formline">
             <label>
@@ -76,7 +79,6 @@ export default function RegisterPlan() {
                 type="number"
                 name="duration"
                 onChange={e => durationChanged(e.target.value)}
-                placeholder="duração"
               />
             </label>
             <label>
@@ -86,7 +88,6 @@ export default function RegisterPlan() {
                 step="0.01"
                 name="price"
                 onChange={e => priceChanged(e.target.value)}
-                placeholder="peso"
               />
             </label>
             <label>

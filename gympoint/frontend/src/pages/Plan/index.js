@@ -31,6 +31,7 @@ export default function Plan() {
       const result = window.confirm('Certeza que deseja deletar?');
       if (result) {
         await api.delete(`plans/${id}`);
+        toast.success('successfully deleted');
         loadPlans();
       }
     } catch (e) {
@@ -50,9 +51,9 @@ export default function Plan() {
           <table>
             <thead>
               <tr>
-                <td>Título</td>
-                <td>Duração</td>
-                <td>Valor p/ mês</td>
+                <td>TÍTULO</td>
+                <td>DURAÇÃO</td>
+                <td>VALOR p/ MÊS</td>
                 <td />
               </tr>
             </thead>

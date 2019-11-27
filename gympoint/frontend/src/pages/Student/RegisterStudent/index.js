@@ -29,6 +29,7 @@ export default function RegisterStudent() {
       await api.post('students', {
         ...data
       });
+      toast.success('successfully registered');
       history.push('/student');
     } catch (e) {
       toast.error(e.response.data.error);
@@ -38,7 +39,7 @@ export default function RegisterStudent() {
     <Container>
       <Formcontent schema={schema} onSubmit={handleSubmit}>
         <Title>
-          <h1>Cadástro de aluno</h1>
+          <h1>Cadastro de aluno</h1>
           <div>
             <Link className="back" to="/student">
               <MdKeyboardArrowLeft size={20} color="#FFF" />
@@ -56,30 +57,20 @@ export default function RegisterStudent() {
           </label>
           <label>
             ENDEREÇO DE E-MAIL
-            <Input type="text" name="email" placeholder="E-mail" />
+            <Input type="text" name="email" placeholder="exemplo@email.com" />
           </label>
           <div className="formline">
             <label>
               <strong>IDADE </strong>
-              <Input type="number" name="age" placeholder="idade" />
+              <Input type="number" name="age" />
             </label>
             <label>
               <strong> PESO (em kg) </strong>
-              <Input
-                type="number"
-                step="0.01"
-                name="student_weight"
-                placeholder="peso"
-              />
+              <Input type="number" step="0.01" name="student_weight" />
             </label>
             <label>
               <strong>ALTURA </strong>
-              <Input
-                type="number"
-                step="0.01"
-                name="student_height"
-                placeholder="altura"
-              />
+              <Input type="number" step="0.01" name="student_height" />
             </label>
           </div>
         </Content>

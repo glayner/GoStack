@@ -114,11 +114,7 @@ export default function Suport() {
             <label>
               <strong>SUA RESPOSTA</strong>
 
-              <Input
-                multiline
-                name="answer"
-                placeholder="Responda o aluno..."
-              />
+              <Input multiline name="answer" placeholder="Resposta..." />
             </label>
 
             <button type="submit">Responder aluno</button>

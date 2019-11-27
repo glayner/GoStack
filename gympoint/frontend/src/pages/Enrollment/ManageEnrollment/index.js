@@ -16,7 +16,6 @@ import pt from 'date-fns/locale/pt-BR';
 
 import { MdCheck, MdKeyboardArrowLeft } from 'react-icons/md';
 import { Input } from '@rocketseat/unform';
-import * as Yup from 'yup';
 
 import { formatPrice } from '~/util/format';
 import api from '~/services/api';
@@ -28,24 +27,6 @@ import ReactSelect from '~/components/InputSelect';
 
 import { Container, Title, Content, Formcontent } from '~/styles/default';
 
-const schema = Yup.object().shape({
-  student: Yup.object()
-    .shape({
-      value: Yup.number().integer()
-    })
-    .typeError('Valor inválido')
-    .required('Aluno obrigatório'),
-  plan: Yup.object()
-    .shape({
-      value: Yup.number().integer()
-    })
-    .typeError('Valor inválido')
-    .required('Aluno obrigatório'),
-  start_date: Yup.date()
-    .typeError('Valor inválido')
-    .required('Data obrigatória')
-});
-
 export default function ManageEnrollment({ match }) {
   const { id } = match.params;
 
@@ -55,8 +36,7 @@ export default function ManageEnrollment({ match }) {
   const [plans, setPlans] = useState({});
   const [plan, setPlan] = useState({});
 
-  const [newStudent, setNewStudent] = useState();
-  const [initialData, setInitialData] = useState({});
+  const [newStudent, setNewStudent] = useState({});
 
   useEffect(() => {
     async function loadManageEnrollment() {
@@ -66,22 +46,10 @@ export default function ManageEnrollment({ match }) {
         .then(d => d.filter(e => e.id === Number(id)));
 
       setStartDate(parseISO(enrollment[0].start_date));
-
-      const { name } = enrollment[0].student;
-
-      const loadStudent = await api
-        .get('students', {
-          params: { name }
-        })
-        .then(r => r.data)
-        .then(d =>
-          d.map(p => ({
-            label: p.name,
-            value: p.id
-          }))
-        );
-
-      setNewStudent(loadStudent[0]);
+      setNewStudent({
+        label: enrollment[0].student.name,
+        value: enrollment[0].student.id
+      });
 
       const loadPlans = await api
         .get('plans')
@@ -97,7 +65,7 @@ export default function ManageEnrollment({ match }) {
 
       if (enrollment[0].plan) {
         const defaultPlan = loadPlans.filter(
-          p => p.label === enrollment[0].plan.title
+          p => p.value === enrollment[0].plan.id
         );
         setPlan(defaultPlan[0]);
       }
@@ -109,11 +77,11 @@ export default function ManageEnrollment({ match }) {
   }, [id]);
 
   const end_date = useMemo(() => {
-    const start_date = newDate || startDate;
-
     if (!plan.duration) {
       return '';
     }
+
+    const start_date = newDate || startDate;
 
     const { duration } = plan;
     const formattedDate = format(
@@ -129,16 +97,19 @@ export default function ManageEnrollment({ match }) {
   const totalPrice = useMemo(() => {
     if (!plan.price) return '';
     return formatPrice(Number(plan.duration) * Number(plan.price));
-  }, [plan.duration, plan.price]);
+  }, [plan]);
 
-  useEffect(() => {
-    setInitialData({
-      end_date,
-      totalPrice,
-      plan,
-      start_date: startDate,
-      student: newStudent
-    });
+  const initialData = useMemo(() => {
+    if (!!end_date && !!newStudent && !!plan && !!startDate && !!totalPrice) {
+      return {
+        end_date,
+        totalPrice,
+        plan,
+        start_date: startDate,
+        student: newStudent
+      };
+    }
+    return {};
   }, [end_date, newStudent, plan, startDate, totalPrice]);
 
   async function handleSubmit(data) {
@@ -177,6 +148,7 @@ export default function ManageEnrollment({ match }) {
         ...newData
       });
       history.push('/enrollment');
+      toast.success('successfully edited');
     } catch (e) {
       toast.error(e.response.data.error);
     }
@@ -197,13 +169,9 @@ export default function ManageEnrollment({ match }) {
 
   return (
     <Container>
-      <Formcontent
-        schema={schema}
-        onSubmit={handleSubmit}
-        initialData={initialData}
-      >
+      <Formcontent onSubmit={handleSubmit} initialData={initialData}>
         <Title>
-          <h1>Cadástro de matrículas</h1>
+          <h1>Edição de matrículas</h1>
           <div>
             <Link className="back" to="/enrollment">
               <MdKeyboardArrowLeft size={20} color="#FFF" />
@@ -225,7 +193,6 @@ export default function ManageEnrollment({ match }) {
             <label>
               <strong> PLANO</strong>
               <ReactSelect name="plan" options={plans} setChange={setPlan} />
-              {console.tron.log(plans)}
             </label>
             <label>
               <strong>DATA DE INÍCIO</strong>

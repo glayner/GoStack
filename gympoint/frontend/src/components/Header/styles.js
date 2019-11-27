@@ -22,7 +22,8 @@ export const Content = styled.div`
     background: transparent;
   }
   &::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.04) !important;
+    border-radius: 15px;
+    background: rgba(0, 0, 0, 0.09) !important;
   }
 
   nav {

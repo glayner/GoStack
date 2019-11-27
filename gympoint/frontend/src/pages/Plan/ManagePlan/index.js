@@ -52,6 +52,7 @@ export default function ManagePlan({ match }) {
       await api.put(`plans/${plan.id}`, {
         ...data
       });
+      toast.success('successfully edited');
       history.push('/plan');
     } catch (e) {
       toast.error(e.response.data.error);

@@ -141,7 +141,7 @@ export default function RegisterEnrollment() {
         initialData={initialData}
       >
         <Title>
-          <h1>Cadástro de matrículas</h1>
+          <h1>Cadastro de matrículas</h1>
           <div>
             <Link className="back" to="/enrollment">
               <MdKeyboardArrowLeft size={20} color="#FFF" />

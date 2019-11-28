@@ -8,6 +8,8 @@ import * as Yup from 'yup';
 import api from '~/services/api';
 import history from '~/services/history';
 
+import Mask from '~/components/InputMask';
+
 import { Container, Title, Content, Formcontent } from '~/styles/default';
 
 const schema = Yup.object().shape({
@@ -66,11 +68,11 @@ export default function RegisterStudent() {
             </label>
             <label>
               <strong> PESO (em kg) </strong>
-              <Input type="number" step="0.01" name="student_weight" />
+              <Mask name="student_weight" suffix="kg" />
             </label>
             <label>
               <strong>ALTURA </strong>
-              <Input type="number" step="0.01" name="student_height" />
+              <Mask name="student_height" suffix="m" />
             </label>
           </div>
         </Content>

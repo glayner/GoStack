@@ -9,6 +9,8 @@ import * as Yup from 'yup';
 import api from '~/services/api';
 import history from '~/services/history';
 
+import Mask from '~/components/InputMask';
+
 import { Container, Title, Content, Formcontent } from '~/styles/default';
 
 const schema = Yup.object().shape({
@@ -79,30 +81,20 @@ export default function ManageStudent({ match }) {
           </label>
           <label>
             ENDEREÇO DE E-MAIL
-            <Input type="text" name="email" placeholder="E-mail" />
+            <Input type="text" name="email" placeholder="exemplo@email.com" />
           </label>
           <div className="formline">
             <label>
               <strong> IDADE</strong>
-              <Input type="number" name="age" placeholder="idade" />
+              <Input type="number" name="age" />
             </label>
             <label>
               <strong> PESO (em kg)</strong>
-              <Input
-                type="number"
-                step="0.01"
-                name="student_weight"
-                placeholder="peso"
-              />
+              <Mask name="student_weight" suffix="kg" />
             </label>
             <label>
               <strong> ALTURA</strong>
-              <Input
-                type="number"
-                step="0.01"
-                name="student_height"
-                placeholder="altura"
-              />
+              <Mask name="student_height" suffix="m" />
             </label>
           </div>
         </Content>

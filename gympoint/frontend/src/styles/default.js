@@ -8,6 +8,7 @@ export const Container = styled.div`
   align-items: center;
   flex-direction: column;
   margin-bottom: 30px;
+
   @media (max-width: 768px) {
     overflow-x: auto;
     align-items: flex-start;
@@ -20,6 +21,23 @@ export const Container = styled.div`
     &::-webkit-scrollbar-thumb {
       border-radius: 15px;
       background: rgba(0, 0, 0, 0.09) !important;
+    }
+  }
+`;
+
+export const Pagination = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  button {
+    background: none;
+    border: 0;
+    border-radius: 4px;
+    justify-items: center;
+    margin: 8px;
+
+    &.pageDisable {
+      cursor: not-allowed;
     }
   }
 `;

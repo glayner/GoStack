@@ -1,30 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
-import { MdAdd, MdSearch } from 'react-icons/md';
+import {
+  MdAdd,
+  MdSearch,
+  MdKeyboardArrowLeft,
+  MdKeyboardArrowRight
+} from 'react-icons/md';
 import { Form, Input } from '@rocketseat/unform';
 
 import api from '~/services/api';
-import { Container, Cover, Title, Content } from '~/styles/default';
+import { Container, Cover, Title, Content, Pagination } from '~/styles/default';
 
 import { Search } from './styles';
 
 export default function Student() {
   const [students, setStudents] = useState([]);
   const [name, setName] = useState('');
+  const [page, setPage] = useState(1);
+  const [prevDisable, setPrevDisable] = useState(true);
+  const [nextDisable, setNextDisable] = useState(false);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   async function loadStudents() {
     const response = await api.get('students', {
-      params: { name }
+      params: { name, page, per_page: 10 }
     });
     setStudents(response.data);
+    if (page === 1) {
+      setPrevDisable(true);
+    }
+    if (response.data.length < 10) {
+      setNextDisable(true);
+    }
   }
 
   useEffect(() => {
     loadStudents();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [page]); // eslint-disable-line
 
   function handleSearch({ nameSearch }) {
     setName(nameSearch);
@@ -42,6 +55,19 @@ export default function Student() {
       }
     } catch (e) {
       toast.error(e.response.data.error);
+    }
+  }
+
+  function handlePevPage() {
+    if (page > 1) {
+      setPage(page - 1);
+      setNextDisable(false);
+    }
+  }
+  function handleNextPage() {
+    if (students.length === 10) {
+      setPage(page + 1);
+      setPrevDisable(false);
     }
   }
   return (
@@ -91,6 +117,28 @@ export default function Student() {
             </tbody>
           </table>
         </Content>
+        <Pagination>
+          <button
+            type="button"
+            className={prevDisable && 'pageDisable'}
+            onClick={() => handlePevPage()}
+          >
+            <MdKeyboardArrowLeft
+              size={30}
+              color={prevDisable ? '#BBB' : '#EE4D64'}
+            />
+          </button>
+          <button
+            type="button"
+            className={nextDisable && 'pageDisable'}
+            onClick={() => handleNextPage()}
+          >
+            <MdKeyboardArrowRight
+              size={30}
+              color={nextDisable ? '#BBB' : '#EE4D64'}
+            />
+          </button>
+        </Pagination>
       </Cover>
     </Container>
   );

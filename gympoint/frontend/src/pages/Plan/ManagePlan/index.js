@@ -10,6 +10,8 @@ import { formatPrice } from '~/util/format';
 import api from '~/services/api';
 import history from '~/services/history';
 
+import Mask from '~/components/InputMask';
+
 import { Container, Formcontent, Title, Content } from '~/styles/default';
 
 const schema = Yup.object().shape({
@@ -59,14 +61,6 @@ export default function ManagePlan({ match }) {
     }
   }
 
-  function priceChanged(e) {
-    setPrice(e);
-  }
-
-  function durationChanged(e) {
-    setDuration(e);
-  }
-
   return (
     <Container>
       <Formcontent schema={schema} initialData={plan} onSubmit={handleSubmit}>
@@ -93,19 +87,13 @@ export default function ManagePlan({ match }) {
               <Input
                 type="number"
                 name="duration"
-                onChange={e => durationChanged(e.target.value)}
+                onChange={e => setDuration(e.target.value)}
                 placeholder="duração"
               />
             </label>
             <label>
               <strong> PREÇO MENSAL</strong>
-              <Input
-                type="number"
-                step="0.01"
-                name="price"
-                onChange={e => priceChanged(e.target.value)}
-                placeholder="peso"
-              />
+              <Mask name="price" prefix="R$" setChange={setPrice} />
             </label>
             <label>
               <strong> PREÇO TOTAL</strong>

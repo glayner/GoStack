@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import ReactModal from 'react-modal';
 import { Input, Form } from '@rocketseat/unform';
+import { MdKeyboardArrowRight, MdKeyboardArrowLeft } from 'react-icons/md';
 
 import * as Yup from 'yup';
 import api from '~/services/api';
 
-import { Container, Cover, Title, Content } from '~/styles/default';
+import { Container, Cover, Title, Content, Pagination } from '~/styles/default';
 import { ModalContainer } from './styles';
 
 const schema = Yup.object().shape({
@@ -20,6 +21,10 @@ export default function Suport() {
   const [modalHelpOrder, setModalHelpOrder] = useState();
   const [showModal, setShowModal] = useState(false);
 
+  const [page, setPage] = useState(1);
+  const [prevDisable, setPrevDisable] = useState(true);
+  const [nextDisable, setNextDisable] = useState(false);
+
   const customStyles = {
     content: {
       top: '50%',
@@ -32,12 +37,20 @@ export default function Suport() {
   };
 
   async function loadSuport() {
-    const response = await api.get('/students/help-orders');
+    const response = await api.get('/students/help-orders', {
+      params: { page, per_page: 10 }
+    });
+    if (page === 1) {
+      setPrevDisable(true);
+    }
+    if (response.data.length < 10) {
+      setNextDisable(true);
+    }
     setHelpOrder(response.data);
   }
   useEffect(() => {
     loadSuport();
-  }, []);
+  }, [ page]); // eslint-disable-line
 
   function handleHelpOrder(suport) {
     setModalHelpOrder(suport);
@@ -58,6 +71,20 @@ export default function Suport() {
       toast.error(`error: ${error}`);
     }
   }
+
+  function handlePevPage() {
+    if (page > 1) {
+      setPage(page - 1);
+      setNextDisable(false);
+    }
+  }
+  function handleNextPage() {
+    if (helpOrder.length === 10) {
+      setPage(page + 1);
+      setPrevDisable(false);
+    }
+  }
+
   return (
     <Container>
       <Cover>
@@ -90,6 +117,28 @@ export default function Suport() {
             </tbody>
           </table>
         </Content>
+        <Pagination>
+          <button
+            type="button"
+            className={prevDisable ? 'pageDisable' : ''}
+            onClick={() => handlePevPage()}
+          >
+            <MdKeyboardArrowLeft
+              size={30}
+              color={prevDisable ? '#BBB' : '#EE4D64'}
+            />
+          </button>
+          <button
+            type="button"
+            className={nextDisable ? 'pageDisable' : ''}
+            onClick={() => handleNextPage()}
+          >
+            <MdKeyboardArrowRight
+              size={30}
+              color={nextDisable ? '#BBB' : '#EE4D64'}
+            />
+          </button>
+        </Pagination>
       </Cover>
 
       <ReactModal

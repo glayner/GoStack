@@ -24,7 +24,10 @@ class PlanController {
   }
 
   async index(req, res) {
+    const { page, per_page } = req.query;
     const plans = await Plan.findAll({
+      limit: per_page,
+      offset: (page - 1) * per_page,
       attributes: ['id', 'title', 'duration', 'price'],
     });
     return res.json(plans);

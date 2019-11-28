@@ -87,13 +87,15 @@ class StudentController {
   }
 
   async index(req, res) {
-    const { name } = req.query;
+    const { name, page, per_page } = req.query;
     const student = await Student.findAll({
       where: {
         name: {
           [Op.iLike]: `%${name}%`,
         },
       },
+      limit: per_page,
+      offset: (page - 1) * per_page,
     });
     return res.json(student);
   }

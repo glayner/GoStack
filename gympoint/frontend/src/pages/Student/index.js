@@ -120,7 +120,7 @@ export default function Student() {
         <Pagination>
           <button
             type="button"
-            className={prevDisable && 'pageDisable'}
+            className={prevDisable ? 'pageDisable' : ''}
             onClick={() => handlePevPage()}
           >
             <MdKeyboardArrowLeft
@@ -130,7 +130,7 @@ export default function Student() {
           </button>
           <button
             type="button"
-            className={nextDisable && 'pageDisable'}
+            className={nextDisable ? 'pageDisable' : ''}
             onClick={() => handleNextPage()}
           >
             <MdKeyboardArrowRight

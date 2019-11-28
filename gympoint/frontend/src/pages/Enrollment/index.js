@@ -3,16 +3,32 @@ import { toast } from 'react-toastify';
 import { parseISO, format } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 import { Link } from 'react-router-dom';
-import { MdAdd, MdCheckCircle } from 'react-icons/md';
+import {
+  MdAdd,
+  MdCheckCircle,
+  MdKeyboardArrowRight,
+  MdKeyboardArrowLeft
+} from 'react-icons/md';
 
 import api from '~/services/api';
-import { Container, Cover, Title, Content } from '~/styles/default';
+import { Container, Cover, Title, Content, Pagination } from '~/styles/default';
 
 export default function Enrollment() {
   const [enrollments, setEnrollments] = useState([]);
+  const [page, setPage] = useState(1);
+  const [prevDisable, setPrevDisable] = useState(true);
+  const [nextDisable, setNextDisable] = useState(false);
 
   async function loadEnrollment() {
-    const response = await api.get('enrollments');
+    const response = await api.get('enrollments', {
+      params: { page, per_page: 10 }
+    });
+    if (page === 1) {
+      setPrevDisable(true);
+    }
+    if (response.data.length < 10) {
+      setNextDisable(true);
+    }
     const data = response.data.map(enrollment => ({
       ...enrollment,
       startDateFormatted: format(
@@ -35,7 +51,7 @@ export default function Enrollment() {
 
   useEffect(() => {
     loadEnrollment();
-  }, []);
+  }, [page]); // eslint-disable-line
 
   async function handleDelete(id) {
     try {
@@ -48,6 +64,19 @@ export default function Enrollment() {
       }
     } catch (e) {
       toast.error(e.response.data.error);
+    }
+  }
+
+  function handlePevPage() {
+    if (page > 1) {
+      setPage(page - 1);
+      setNextDisable(false);
+    }
+  }
+  function handleNextPage() {
+    if (enrollments.length === 10) {
+      setPage(page + 1);
+      setPrevDisable(false);
     }
   }
 
@@ -99,6 +128,28 @@ export default function Enrollment() {
             </tbody>
           </table>
         </Content>
+        <Pagination>
+          <button
+            type="button"
+            className={prevDisable ? 'pageDisable' : ''}
+            onClick={() => handlePevPage()}
+          >
+            <MdKeyboardArrowLeft
+              size={30}
+              color={prevDisable ? '#BBB' : '#EE4D64'}
+            />
+          </button>
+          <button
+            type="button"
+            className={nextDisable ? 'pageDisable' : ''}
+            onClick={() => handleNextPage()}
+          >
+            <MdKeyboardArrowRight
+              size={30}
+              color={nextDisable ? '#BBB' : '#EE4D64'}
+            />
+          </button>
+        </Pagination>
       </Cover>
     </Container>
   );

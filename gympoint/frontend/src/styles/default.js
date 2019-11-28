@@ -6,7 +6,7 @@ export const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
+  flex-direction: row;
   margin-bottom: 30px;
 
   @media (max-width: 768px) {
@@ -32,12 +32,11 @@ export const Pagination = styled.div`
   button {
     background: none;
     border: 0;
-    border-radius: 4px;
-    justify-items: center;
     margin: 8px;
 
     &.pageDisable {
       cursor: not-allowed;
+      visibility: hidden;
     }
   }
 `;

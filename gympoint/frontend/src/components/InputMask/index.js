@@ -20,7 +20,7 @@ export default function Mask({ name, prefix, suffix, setChange }) {
   }, [ref.current, fieldName]); // eslint-disable-line
 
   function handleChange(e) {
-    const onlyNumber = e.target.value
+    let onlyNumber = e.target.value
       .split('')
       .map(n => {
         if (n === ',') return '.';
@@ -28,7 +28,11 @@ export default function Mask({ name, prefix, suffix, setChange }) {
         return n;
       })
       .join('');
+    if (prefix) {
+      [, onlyNumber] = onlyNumber.split(prefix);
+    }
     setValue(parseFloat(onlyNumber));
+
     if (setChange) {
       setChange(parseFloat(onlyNumber));
     }

@@ -2,7 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import ReactModal from 'react-modal';
 import { Input, Form } from '@rocketseat/unform';
-import { MdKeyboardArrowRight, MdKeyboardArrowLeft } from 'react-icons/md';
+import {
+  MdKeyboardArrowRight,
+  MdKeyboardArrowLeft,
+  MdDoneAll
+} from 'react-icons/md';
 
 import * as Yup from 'yup';
 import api from '~/services/api';
@@ -83,6 +87,23 @@ export default function Suport() {
       setPage(page + 1);
       setPrevDisable(false);
     }
+  }
+  if (helpOrder.length === 0) {
+    return (
+      <Container>
+        <Cover>
+          <Title>
+            <h1>Pedidos de auxílio</h1>
+          </Title>
+          <Content>
+            <div className="divDone">
+              <MdDoneAll size={150} color="#ee4d64" />
+              <span>Todos pedidos de auxílio foram respondidos</span>
+            </div>
+          </Content>
+        </Cover>
+      </Container>
+    );
   }
 
   return (

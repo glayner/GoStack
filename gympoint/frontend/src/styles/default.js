@@ -154,6 +154,12 @@ export const Content = styled.div`
   padding: 20px;
   background: #fff;
   border-radius: 4px;
+
+  div.divDone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 export const Formcontent = styled(Form)`

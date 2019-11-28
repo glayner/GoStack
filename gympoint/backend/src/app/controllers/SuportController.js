@@ -46,6 +46,7 @@ class SuportController {
   async index(req, res) {
     const { page, per_page } = req.query;
     const helpOrder = await HelpOrder.findAll({
+      order: ['created_at'],
       limit: per_page,
       offset: (page - 1) * per_page,
       where: { answer: null },

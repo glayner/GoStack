@@ -79,7 +79,7 @@ export default function RegisterPlan() {
             <label>
               <strong>PREÇO MENSAL</strong>
 
-              <Mask name="price" prefix="R$" setChange={setPrice} />
+              <Mask name="price" prefix="R$" setChange={e => setPrice(e)} />
             </label>
             <label>
               <strong> PREÇO TOTAL</strong>

@@ -64,6 +64,7 @@ class EnrollmentController {
   async index(req, res) {
     const { page, per_page } = req.query;
     const enrollment = await Enrollment.findAll({
+      order: [['created_at', 'DESC']],
       limit: per_page,
       offset: (page - 1) * per_page,
       attributes: ['id', 'start_date', 'end_date', 'price', 'active'],

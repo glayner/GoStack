@@ -52,7 +52,9 @@ export default function RegisterEnrollment() {
 
   async function loadPlans() {
     const response = await api
-      .get('plans')
+      .get('plans', {
+        params: { page: 1, per_page: 100 }
+      })
       .then(r => r.data)
       .then(d =>
         d.map(p => ({
@@ -122,7 +124,9 @@ export default function RegisterEnrollment() {
 
   async function loadOptions(inputValue) {
     const response = await api
-      .get('students', { params: { name: `${inputValue}` } })
+      .get('students', {
+        params: { name: `${inputValue}`, page: 1, per_page: 100 }
+      })
       .then(r => r.data)
       .then(r =>
         r.map(student => ({

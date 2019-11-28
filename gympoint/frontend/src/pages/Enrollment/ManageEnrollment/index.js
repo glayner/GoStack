@@ -41,7 +41,9 @@ export default function ManageEnrollment({ match }) {
   useEffect(() => {
     async function loadManageEnrollment() {
       const enrollment = await api
-        .get('enrollments')
+        .get('enrollments', {
+          params: { page: 1, per_page: 100 }
+        })
         .then(r => r.data)
         .then(d => d.filter(e => e.id === Number(id)));
 
@@ -52,7 +54,9 @@ export default function ManageEnrollment({ match }) {
       });
 
       const loadPlans = await api
-        .get('plans')
+        .get('plans', {
+          params: { page: 1, per_page: 100 }
+        })
         .then(r => r.data)
         .then(d =>
           d.map(p => ({
@@ -156,7 +160,9 @@ export default function ManageEnrollment({ match }) {
 
   async function loadOptions(inputValue) {
     const response = await api
-      .get('students', { params: { name: `${inputValue}` } })
+      .get('students', {
+        params: { name: `${inputValue}`, page: 1, per_page: 100 }
+      })
       .then(r => r.data)
       .then(r =>
         r.map(student => ({

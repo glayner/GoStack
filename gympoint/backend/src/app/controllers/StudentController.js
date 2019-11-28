@@ -94,6 +94,7 @@ class StudentController {
           [Op.iLike]: `%${name}%`,
         },
       },
+      order: ['name'],
       limit: per_page,
       offset: (page - 1) * per_page,
     });

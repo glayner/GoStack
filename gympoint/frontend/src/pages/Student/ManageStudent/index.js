@@ -35,7 +35,9 @@ export default function ManageStudent({ match }) {
 
   useEffect(() => {
     async function loadManageStudent() {
-      const response = await api.get('students', { params: { name } });
+      const response = await api.get('students', {
+        params: { name, page: 1, per_page: 100 }
+      });
       const data = response.data[0];
       setStudent({
         ...data

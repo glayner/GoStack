@@ -23,24 +23,21 @@ export default function Mask({ name, prefix, suffix, setChange }) {
     const onlyNumber = e.target.value
       .split('')
       .map(n => {
-        if (Number(n)) return n;
-
         if (n === ',') return '.';
 
-        return '';
+        return n;
       })
       .join('');
-
-    setValue(+onlyNumber);
+    setValue(parseFloat(onlyNumber));
     if (setChange) {
-      setChange(+onlyNumber);
+      setChange(parseFloat(onlyNumber));
     }
   }
 
   return (
     <>
       <NumberFormat
-        thousandSeparator="."
+        thousandSeparator={false}
         decimalSeparator=","
         fixedDecimalScale={2}
         value={value}

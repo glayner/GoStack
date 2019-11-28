@@ -40,7 +40,9 @@ export default function ManagePlan({ match }) {
 
   useEffect(() => {
     async function loadManagePlan() {
-      const response = await api.get('plans');
+      const response = await api.get('plans', {
+        params: { page: 1, per_page: 100 }
+      });
       const data = response.data.find(p => p.id === Number(id));
       setPlan(data);
       setPrice(data.price);

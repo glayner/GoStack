@@ -92,7 +92,7 @@ export default function ManageEnrollment({ match }) {
     }
 
     loadManageEnrollment();
-  }, [id]);
+  }, [id]);// eslint-disable-line
 
   const end_date = useMemo(() => {
     if (!plan.duration) {

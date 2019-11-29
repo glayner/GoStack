@@ -32,33 +32,33 @@ const schema = Yup.object().shape({
 });
 
 export default function ManageStudent({ match }) {
-const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const { name } = match.params;
   const [student, setStudent] = useState({});
 
   useEffect(() => {
     async function loadManageStudent() {
-try {
+      try {
 
-      const response = await api.get('students', {
-        params: { name, page: 1, per_page: 100 }
-      });
-      const data = response.data[0];
-      setStudent({
-        ...data
-      });
+        const response = await api.get('students', {
+          params: { name, page: 1, per_page: 100 }
+        });
+        const data = response.data[0];
+        setStudent({
+          ...data
+        });
 
-    } catch (e) {
-      if (e.response.data.error === 'Token invalid') {
-        dispatch(signOut());
-      } else {
-        toast.error(e.response.data.error);
+      } catch (e) {
+        if (e.response.data.error === 'Token invalid') {
+          dispatch(signOut());
+        } else {
+          toast.error(e.response.data.error);
+        }
       }
     }
-    }
     loadManageStudent();
-  }, [name]);
+  }, [name]);// eslint-disable-line
 
   async function handleSubmit(data) {
     try {

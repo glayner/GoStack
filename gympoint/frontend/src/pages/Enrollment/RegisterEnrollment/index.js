@@ -109,7 +109,7 @@ export default function RegisterEnrollment() {
       end_date,
       totalPrice
     });
-  }, [end_date, startDate, totalPrice]);
+  }, [end_date, startDate, totalPrice]);// eslint-disable-line
 
   async function handleSubmit(data) {
     try {

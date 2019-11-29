@@ -61,7 +61,7 @@ const dispatch = useDispatch();
       }
     }
     loadManagePlan();
-  }, [id]);
+  }, [id]);// eslint-disable-line
 
   async function handleSubmit(data) {
     try {

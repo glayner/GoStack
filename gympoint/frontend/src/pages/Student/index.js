@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { signOut } from '~/store/modules/auth/actions';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import {
@@ -15,23 +17,32 @@ import { Container, Cover, Title, Content, Pagination } from '~/styles/default';
 import { Search } from './styles';
 
 export default function Student() {
+  const dispatch = useDispatch();
+
   const [students, setStudents] = useState([]);
   const [name, setName] = useState('');
   const [page, setPage] = useState(1);
   const [prevDisable, setPrevDisable] = useState(true);
   const [nextDisable, setNextDisable] = useState(false);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   async function loadStudents() {
-    const response = await api.get('students', {
-      params: { name, page, per_page: 10 }
-    });
-    setStudents(response.data);
-    if (page === 1) {
-      setPrevDisable(true);
-    }
-    if (response.data.length < 10) {
-      setNextDisable(true);
+    try {
+      const response = await api.get('students', {
+        params: { name, page, per_page: 10 }
+      });
+      setStudents(response.data);
+      if (page === 1) {
+        setPrevDisable(true);
+      }
+      if (response.data.length < 10) {
+        setNextDisable(true);
+      }
+    } catch (e) {
+      if (e.response.data.error === 'Token invalid') {
+        dispatch(signOut());
+      } else {
+        toast.error(e.response.data.error)
+      }
     }
   }
 

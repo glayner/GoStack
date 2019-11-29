@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { signOut } from '~/store/modules/auth/actions';
 import { toast } from 'react-toastify';
 import ReactModal from 'react-modal';
 import { Input, Form } from '@rocketseat/unform';
@@ -21,6 +23,8 @@ const schema = Yup.object().shape({
 });
 
 export default function Suport() {
+  const dispatch = useDispatch();
+
   const [helpOrder, setHelpOrder] = useState([]);
   const [modalHelpOrder, setModalHelpOrder] = useState();
   const [showModal, setShowModal] = useState(false);
@@ -41,20 +45,29 @@ export default function Suport() {
   };
 
   async function loadSuport() {
-    const response = await api.get('/students/help-orders', {
-      params: { page, per_page: 10 }
-    });
-    if (page === 1) {
-      setPrevDisable(true);
+    try {
+      const response = await api.get('/students/help-orders', {
+        params: { page, per_page: 10 }
+      });
+      if (page === 1) {
+        setPrevDisable(true);
+      }
+      if (response.data.length < 10) {
+        setNextDisable(true);
+      }
+      setHelpOrder(response.data);
+    } catch (e) {
+      if (e.response.data.error === 'Token invalid') {
+        dispatch(signOut());
+      } else {
+        toast.error(e.response.data.error)
+      }
     }
-    if (response.data.length < 10) {
-      setNextDisable(true);
-    }
-    setHelpOrder(response.data);
   }
+
   useEffect(() => {
     loadSuport();
-  }, [ page]); // eslint-disable-line
+  }, [page]); // eslint-disable-line
 
   function handleHelpOrder(suport) {
     setModalHelpOrder(suport);

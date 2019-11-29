@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { signOut } from '~/store/modules/auth/actions';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import { MdCheck, MdKeyboardArrowLeft } from 'react-icons/md';
@@ -25,6 +27,8 @@ const schema = Yup.object().shape({
 });
 
 export default function RegisterPlan() {
+  const dispatch = useDispatch();
+
   const [price, setPrice] = useState(null);
   const [duration, setDuration] = useState(null);
   const [totalPrice, setTotalPrice] = useState('');
@@ -43,7 +47,11 @@ export default function RegisterPlan() {
       toast.success('successfully registered');
       history.push('/plan');
     } catch (e) {
-      toast.error(e.response.data.error);
+      if (e.response.data.error === 'Token invalid') {
+        dispatch(signOut());
+      } else {
+        toast.error(e.response.data.error);
+      }
     }
   }
 

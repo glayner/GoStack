@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { signOut } from '~/store/modules/auth/actions';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import {
@@ -12,6 +14,8 @@ import api from '~/services/api';
 import { Container, Cover, Title, Content, Pagination } from '~/styles/default';
 
 export default function Plan() {
+  const dispatch = useDispatch();
+
   const [plans, setPlans] = useState([]);
 
   const [page, setPage] = useState(1);
@@ -19,27 +23,35 @@ export default function Plan() {
   const [nextDisable, setNextDisable] = useState(false);
 
   async function loadPlans() {
-    const response = await api.get('plans', {
-      params: { page, per_page: 10 }
-    });
-    if (page === 1) {
-      setPrevDisable(true);
+    try {
+      const response = await api.get('plans', {
+        params: { page, per_page: 10 }
+      });
+      if (page === 1) {
+        setPrevDisable(true);
+      }
+      if (response.data.length < 10) {
+        setNextDisable(true);
+      }
+      const data = response.data.map(plan => ({
+        ...plan,
+        durationFormatted:
+          plan.duration === 1 ? `${plan.duration} mês` : `${plan.duration} meses`,
+        priceFormatted: formatPrice(plan.price)
+      }));
+      setPlans(data);
+    } catch (e) {
+      if (e.response.data.error === 'Token invalid') {
+        dispatch(signOut());
+      } else {
+        toast.error(e.response.data.error)
+      }
     }
-    if (response.data.length < 10) {
-      setNextDisable(true);
-    }
-    const data = response.data.map(plan => ({
-      ...plan,
-      durationFormatted:
-        plan.duration === 1 ? `${plan.duration} mês` : `${plan.duration} meses`,
-      priceFormatted: formatPrice(plan.price)
-    }));
-    setPlans(data);
   }
 
   useEffect(() => {
     loadPlans();
-  }, [ page]); // eslint-disable-line
+  }, [page]); // eslint-disable-line
 
   async function handleDelete(id) {
     try {

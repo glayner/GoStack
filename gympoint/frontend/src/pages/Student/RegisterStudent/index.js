@@ -1,4 +1,6 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { signOut } from '~/store/modules/auth/actions';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import { MdCheck, MdKeyboardArrowLeft } from 'react-icons/md';
@@ -26,6 +28,7 @@ const schema = Yup.object().shape({
 });
 
 export default function RegisterStudent() {
+  const dispatch = useDispatch();
   async function handleSubmit(data) {
     try {
       await api.post('students', {
@@ -34,7 +37,11 @@ export default function RegisterStudent() {
       toast.success('successfully registered');
       history.push('/student');
     } catch (e) {
-      toast.error(e.response.data.error);
+      if (e.response.data.error === 'Token invalid') {
+        dispatch(signOut());
+      } else {
+        toast.error(e.response.data.error);
+      }
     }
   }
   return (

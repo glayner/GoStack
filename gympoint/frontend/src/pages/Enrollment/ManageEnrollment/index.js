@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
+import { signOut } from '~/store/modules/auth/actions';
 import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
@@ -28,6 +30,8 @@ import ReactSelect from '~/components/InputSelect';
 import { Container, Title, Content, Formcontent } from '~/styles/default';
 
 export default function ManageEnrollment({ match }) {
+  const dispatch = useDispatch();
+
   const { id } = match.params;
 
   const [startDate, setStartDate] = useState();
@@ -40,41 +44,51 @@ export default function ManageEnrollment({ match }) {
 
   useEffect(() => {
     async function loadManageEnrollment() {
-      const enrollment = await api
-        .get('enrollments', {
-          params: { page: 1, per_page: 100 }
-        })
-        .then(r => r.data)
-        .then(d => d.filter(e => e.id === Number(id)));
+      try {
 
-      setStartDate(parseISO(enrollment[0].start_date));
-      setNewStudent({
-        label: enrollment[0].student.name,
-        value: enrollment[0].student.id
-      });
+        const enrollment = await api
+          .get('enrollments', {
+            params: { page: 1, per_page: 100 }
+          })
+          .then(r => r.data)
+          .then(d => d.filter(e => e.id === Number(id)));
 
-      const loadPlans = await api
-        .get('plans', {
-          params: { page: 1, per_page: 100 }
-        })
-        .then(r => r.data)
-        .then(d =>
-          d.map(p => ({
-            label: p.title,
-            value: p.id,
-            duration: p.duration,
-            price: p.price
-          }))
-        );
+        setStartDate(parseISO(enrollment[0].start_date));
+        setNewStudent({
+          label: enrollment[0].student.name,
+          value: enrollment[0].student.id
+        });
 
-      if (enrollment[0].plan) {
-        const defaultPlan = loadPlans.filter(
-          p => p.value === enrollment[0].plan.id
-        );
-        setPlan(defaultPlan[0]);
+        const loadPlans = await api
+          .get('plans', {
+            params: { page: 1, per_page: 100 }
+          })
+          .then(r => r.data)
+          .then(d =>
+            d.map(p => ({
+              label: p.title,
+              value: p.id,
+              duration: p.duration,
+              price: p.price
+            }))
+          );
+
+        if (enrollment[0].plan) {
+          const defaultPlan = loadPlans.filter(
+            p => p.value === enrollment[0].plan.id
+          );
+          setPlan(defaultPlan[0]);
+        }
+
+        setPlans(loadPlans);
+
+      } catch (e) {
+        if (e.response.data.error === 'Token invalid') {
+          dispatch(signOut());
+        } else {
+          toast.error(e.response.data.error);
+        }
       }
-
-      setPlans(loadPlans);
     }
 
     loadManageEnrollment();
@@ -154,7 +168,11 @@ export default function ManageEnrollment({ match }) {
       history.push('/enrollment');
       toast.success('successfully edited');
     } catch (e) {
-      toast.error(e.response.data.error);
+      if (e.response.data.error === 'Token invalid') {
+        dispatch(signOut());
+      } else {
+        toast.error(e.response.data.error);
+      }
     }
   }
 

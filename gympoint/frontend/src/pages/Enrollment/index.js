@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { signOut } from '~/store/modules/auth/actions';
 import { toast } from 'react-toastify';
 import { parseISO, format } from 'date-fns';
 import pt from 'date-fns/locale/pt';
@@ -11,15 +13,19 @@ import {
 } from 'react-icons/md';
 
 import api from '~/services/api';
+
 import { Container, Cover, Title, Content, Pagination } from '~/styles/default';
 
 export default function Enrollment() {
+const dispatch = useDispatch();
+
   const [enrollments, setEnrollments] = useState([]);
   const [page, setPage] = useState(1);
   const [prevDisable, setPrevDisable] = useState(true);
   const [nextDisable, setNextDisable] = useState(false);
 
   async function loadEnrollment() {
+    try {
     const response = await api.get('enrollments', {
       params: { page, per_page: 10 }
     });
@@ -47,6 +53,14 @@ export default function Enrollment() {
       )
     }));
     setEnrollments(data);
+
+  } catch (e) {
+    if(e.response.data.error === 'Token invalid'){
+        dispatch(signOut());
+    }else{
+      toast.error(e.response.data.error)
+    }
+  }
   }
 
   useEffect(() => {
@@ -64,6 +78,7 @@ export default function Enrollment() {
       }
     } catch (e) {
       toast.error(e.response.data.error);
+
     }
   }
 

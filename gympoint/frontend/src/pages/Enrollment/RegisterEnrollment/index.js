@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
+import { signOut } from '~/store/modules/auth/actions';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import {
@@ -45,27 +47,38 @@ const schema = Yup.object().shape({
 });
 
 export default function RegisterEnrollment() {
+  const dispatch = useDispatch();
+
   const [startDate, setStartDate] = useState(new Date());
   const [plans, setPlans] = useState({});
   const [plan, setPlan] = useState({});
   const [initialData, setInitialData] = useState({});
 
   async function loadPlans() {
-    const response = await api
-      .get('plans', {
-        params: { page: 1, per_page: 100 }
-      })
-      .then(r => r.data)
-      .then(d =>
-        d.map(p => ({
-          label: p.title,
-          value: p.id,
-          duration: p.duration,
-          price: p.price
-        }))
-      );
+    try {
+      const response = await api
+        .get('plans', {
+          params: { page: 1, per_page: 100 }
+        })
+        .then(r => r.data)
+        .then(d =>
+          d.map(p => ({
+            label: p.title,
+            value: p.id,
+            duration: p.duration,
+            price: p.price
+          }))
+        );
 
-    setPlans(response);
+      setPlans(response);
+
+    } catch (e) {
+      if (e.response.data.error === 'Token invalid') {
+        dispatch(signOut());
+      } else {
+        toast.error(e.response.data.error);
+      }
+    }
   }
 
   const end_date = useMemo(() => {

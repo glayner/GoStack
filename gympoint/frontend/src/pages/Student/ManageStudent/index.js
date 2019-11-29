@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { signOut } from '~/store/modules/auth/actions';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -30,11 +32,15 @@ const schema = Yup.object().shape({
 });
 
 export default function ManageStudent({ match }) {
+const dispatch = useDispatch();
+
   const { name } = match.params;
   const [student, setStudent] = useState({});
 
   useEffect(() => {
     async function loadManageStudent() {
+try {
+
       const response = await api.get('students', {
         params: { name, page: 1, per_page: 100 }
       });
@@ -42,6 +48,14 @@ export default function ManageStudent({ match }) {
       setStudent({
         ...data
       });
+
+    } catch (e) {
+      if (e.response.data.error === 'Token invalid') {
+        dispatch(signOut());
+      } else {
+        toast.error(e.response.data.error);
+      }
+    }
     }
     loadManageStudent();
   }, [name]);
@@ -54,7 +68,11 @@ export default function ManageStudent({ match }) {
       toast.success('successfully edited');
       history.push('/student');
     } catch (e) {
-      toast.error(e.response.data.error);
+      if (e.response.data.error === 'Token invalid') {
+        dispatch(signOut());
+      } else {
+        toast.error(e.response.data.error);
+      }
     }
   }
   return (

@@ -22,7 +22,7 @@ export default (signedIn = false) =>
           },
           {
             tabBarOptions: {
-              keyboardHidesTabBar: true, // ao abrir teclado passa por cima da tabBar
+              keyboardHidesTabBar: true,
               activeTintColor: '#fff',
               inactiveTintColor: 'rgba(255,255,255,0.6)',
               style: {

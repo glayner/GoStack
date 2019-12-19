@@ -29,8 +29,6 @@ describe('TechList component', () => {
     fireEvent.change(getByLabelText('Tech'), {target: {value: 'Node.js'}})
     fireEvent.submit(getByTestId('tech-form'));
 
-    console.log(dispatch.mock.calls)
-
     expect(dispatch).toHaveBeenCalledWith(addTech('Node.js'));
   })
 });

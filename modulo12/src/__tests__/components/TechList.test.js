@@ -31,4 +31,4 @@ describe('TechList component', () => {
 
     expect(dispatch).toHaveBeenCalledWith(addTech('Node.js'));
   })
-});
+}); 

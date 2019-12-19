@@ -27,4 +27,4 @@ describe('Techs saga', ()=>{
 
     expect(dispatch).toBeCalledWith(getTechsFailure())
   })
-});
+}); 

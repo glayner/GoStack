@@ -37,7 +37,7 @@
     "collectCoverageFrom": [
       "!src/service/api.js"
     ],
-    "coverageDirectory": "/__tests__/coverage",
+    "coverageDirectory": "__tests__/coverage",
     "moduleNameMapper": {
       "^~/(.*)": "<rootDir>/src/$1"
     }
